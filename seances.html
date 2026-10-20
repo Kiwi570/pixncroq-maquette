@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Séances et tarifs · Pix’n Croq</title>
+<meta name="description" content="Les 11 univers de séance de Liz Leroy : formules, prix, options et composeur de séance. Portraits, anniversaire, grossesse, nouveau-né, boudoir, mariage, baptême, animaux, restauration et projets sur mesure.">
+<meta name="theme-color" content="#1D1511">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/fraunces-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="assets/vendor/lenis.css">
+<link rel="stylesheet" href="assets/css/main.css">
+
+</head>
+<body data-page="seances">
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header class="entete">
+  <div class="entete__in">
+    <a class="marque" href="index.html" aria-label="Pix’n Croq by Liz Leroy, accueil"><b>Pix’n <i>Croq</i></b><small>by Liz Leroy</small></a>
+    <div class="compteur" aria-hidden="true"><span>Vue</span><span class="compteur__num"><span>01</span></span><span>/36</span><span class="compteur__nom"></span></div>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="seances.html" aria-current="page">Séances</a>
+      <a href="boutique.html">Boutique</a>
+      <a href="index.html#liz">Liz</a>
+      <a href="index.html#zone">Zone</a>
+    </nav>
+    <div class="outils">
+      <button class="outil" id="btn-son" type="button" aria-pressed="false" aria-label="Son du déclencheur" title="Son du déclencheur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span class="lbl">Son</span></button>
+      <button class="outil" id="btn-calme" type="button" aria-pressed="false" title="Réduire les animations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg><span class="lbl">Mode calme</span></button>
+      <button class="outil panier-btn" type="button" aria-label="Ouvrir le panier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="nb">0</span></button>
+      <a class="btn btn--petit reserver-cta" href="index.html#reserver" data-magnet>Réserver</a>
+      <button class="outil menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="menu" id="menu" role="dialog" aria-label="Menu">
+  <button class="outil menu-fermer" type="button" aria-label="Fermer le menu">Fermer</button>
+  <a href="seances.html">Séances</a>
+  <a href="boutique.html">Boutique</a>
+  <a href="index.html#liz">Liz</a>
+  <a href="index.html#zone">Zone</a>
+  <a href="index.html#reserver">Réserver</a>
+  <div class="menu__pied"><span>06 47 52 32 37</span><span>croqnpix@gmail.com</span><span>Ugny, près de Longwy (54)</span></div>
+</div>
+<div class="flash" aria-hidden="true"></div>
+
+<main id="contenu">
+  <section class="u-hero" data-sous-entete data-vue="Univers" aria-labelledby="u-titre">
+    <div class="wrap u-hero__in">
+      <div>
+        <p class="etiquette" style="color:var(--fumee-nuit)" id="u-groupe">Cérémonies</p>
+        <h1 id="u-titre" style="margin-top:1rem">Mariage</h1>
+        <p class="u-hero__acc" id="u-acc"></p>
+        <p class="u-hero__texte" id="u-texte"></p>
+        <div class="u-hero__des"><span class="etiquette" style="color:var(--fumee-nuit)" id="u-des-lbl">À partir de</span><b id="u-des">600 €</b></div>
+        <div class="ouverture__actions"><a class="btn btn--clair" href="#composer" data-magnet>Composer ma séance <span class="fleche" aria-hidden="true">→</span></a><a class="btn btn--ligne" href="#formules">Voir les formules</a></div>
+      </div>
+      <figure class="u-hero__photo" style="margin:0">
+        <div class="cadre" id="u-photo"></div>
+        <figcaption id="u-exif"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="u-puces-wrap"><nav class="wrap u-puces" id="u-puces" aria-label="Choisir un univers"></nav></div>
+
+  <section class="u-section" id="formules" data-vue="Formules" aria-labelledby="f-titre">
+    <div class="wrap">
+      <div class="titre-section">
+        <p class="etiquette">Formules et tarifs</p>
+        <h2 id="f-titre">Les <em>formules</em></h2>
+        <p id="f-intro"></p>
+      </div>
+      <div class="formules" id="f-liste"></div>
+      <p class="note-maquette" style="margin-top:1.4rem" id="f-note"></p>
+    </div>
+  </section>
+
+  <section class="u-section" id="composer" style="background:var(--lin)" data-vue="Composer" aria-labelledby="c-titre">
+    <div class="wrap">
+      <div class="titre-section">
+        <p class="etiquette">Estimation instantanée</p>
+        <h2 id="c-titre">Composer <em>ma séance</em></h2>
+        <p>Choisissez une formule, ajoutez les options et votre commune : le total se met à jour. Prix du site actuel, à confirmer avec Liz.</p>
+      </div>
+      <div class="compo" id="c-zone"></div>
+    </div>
+  </section>
+
+  <section class="u-section" id="galerie" data-vue="Galerie" aria-labelledby="g-titre">
+    <div class="wrap">
+      <div class="titre-section">
+        <p class="etiquette">Photos de Liz</p>
+        <h2 id="g-titre">La <em>galerie</em></h2>
+        <p id="g-intro">Cliquez sur une photo pour l’ouvrir en grand, sans recadrage, avec la loupe.</p>
+      </div>
+      <div id="g-liste"></div>
+    </div>
+  </section>
+
+  <section class="u-section" style="padding-top:0" data-vue="Infos pratiques" aria-label="Infos pratiques">
+    <div class="wrap">
+      <div class="infos">
+        <div class="info"><span class="etiquette">Déplacement</span><b>15 km inclus autour d’Ugny</b><p>Au-delà, 0,50 € par kilomètre supplémentaire, calculés sur l’aller-retour.</p></div>
+        <div class="info"><span class="etiquette">Paiement</span><b>En plusieurs fois</b><p>Possible, selon les modalités définies lors de la réservation.</p></div>
+        <div class="info"><span class="etiquette">Après la séance</span><b>Votre galerie privée</b><p>Vous sélectionnez vos photos à retoucher puis téléchargez les images finales en haute définition. Produits d’impression sur <a class="lien" href="boutique.html">la boutique</a>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="u-section sombre" data-vue="Autres univers" aria-label="Autres univers">
+    <div class="wrap">
+      <p class="etiquette" style="margin-bottom:1.2rem">Continuer la visite</p>
+      <div class="suivant" id="u-suivant"></div>
+    </div>
+  </section>
+</main>
+<div class="visionneuse" id="visionneuse" role="dialog" aria-modal="true" aria-label="Photo en grand" hidden>
+  <div class="visionneuse__haut"><span class="etiquette" style="color:var(--fumee-nuit)" id="v-compte"></span><div style="display:flex;gap:.5rem"><button class="outil" type="button" id="v-loupe" aria-pressed="false">Loupe</button><button class="outil" type="button" id="v-fermer">Fermer</button></div></div>
+  <div class="visionneuse__scene" id="v-scene"><div class="loupe" id="v-lentille" aria-hidden="true"></div></div>
+  <div class="visionneuse__bas"><button class="outil" type="button" id="v-prec">← Précédente</button><span id="v-exif"></span><button class="outil" type="button" id="v-suiv">Suivante →</button></div>
+</div>
+<footer class="pied">
+  <div class="wrap">
+    <svg class="pied__marque" viewBox="0 0 1200 210" role="img" aria-label="Pix’n Croq"><text x="0" y="170" font-size="196">Pix’n Croq</text></svg>
+    <div class="pied__grille">
+      <div>
+        <h4>Le studio</h4>
+        <ul><li>Liz Leroy, photographe</li><li>9 rue de Fontigny</li><li>54870 Ugny, près de Longwy</li><li>Séances en extérieur, à domicile et au home studio</li></ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul><li>06 47 52 32 37</li><li>croqnpix@gmail.com</li><li><a class="lien" href="index.html#reserver">Demande de séance</a></li></ul>
+      </div>
+      <div>
+        <h4>Suivre</h4>
+        <ul><li><a class="lien" href="https://www.instagram.com/pix.n.croq_/" target="_blank" rel="noopener">Instagram</a></li><li><a class="lien" href="https://www.facebook.com/share/195W3ZWMXJ/" target="_blank" rel="noopener">Facebook</a></li><li><a class="lien" href="https://www.tiktok.com/@pix.n.croq_" target="_blank" rel="noopener">TikTok</a></li><li><a class="lien" href="https://g.page/r/CSLnjXo36XrMEAE/review" target="_blank" rel="noopener">Laisser un avis Google</a></li></ul>
+      </div>
+      <div>
+        <h4>Informations</h4>
+        <ul><li><a class="lien" href="mentions.html">Mentions légales</a></li><li>CGV <span class="a-completer">à rédiger</span></li><li>Confidentialité <span class="a-completer">à compléter</span></li><li><a class="lien" href="seances.html">Tous les tarifs</a></li></ul>
+      </div>
+    </div>
+    <div class="pied__bas"><span>© 2026 Liz Leroy · EI · SIRET 988 136 925 00019</span><span>Maquette : textes et tarifs repris du site actuel, aucun formulaire ni paiement réel</span></div>
+  </div>
+</footer>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/vendor/SplitText.min.js" defer></script>
+<script src="assets/vendor/CustomEase.min.js" defer></script>
+<script src="assets/vendor/lenis.min.js" defer></script>
+<script src="assets/js/images.js" defer></script>
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/core.js" defer></script>
+<script type="module" src="assets/js/gl.js"></script>
+<script src="assets/js/seances.js" defer></script>
+</body>
+</html>
