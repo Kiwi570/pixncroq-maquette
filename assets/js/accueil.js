@@ -13,10 +13,10 @@
   piste.innerHTML = D.univers.map((u, i) => {
     const k = visuel(u);
     const ambiance = !u.photos.length;
-    return '<a class="oeuvre" href="seances.html#' + u.id + '" data-couleur="' + PX.couleur(k) + '" data-curseur="voir" data-curseur-texte="Tarifs">' +
-      '<div class="oeuvre__cadre" style="--ar:' + PX.ar(k).toFixed(3) + '">' + PX.img(k, { sizes: '(min-width: 900px) 40vw, 80vw', alt: ambiance ? '' : undefined }) + (ambiance ? '<span class="ambiance-tag">Ambiance · photos à venir</span>' : '') + '<span class="oeuvre__reflet" aria-hidden="true"></span></div>' +
-      '<div class="oeuvre__legende"><span class="oeuvre__num">' + String(i + 1).padStart(2, '0') + '</span><span class="oeuvre__nom">' + u.nom + '</span><span class="oeuvre__prix">' + prixDe(u) + '</span><span class="oeuvre__acc">' + u.accroche + '</span>' + (ambiance ? '' : PX.exif(k)) + '</div></a>';
-  }).join('') + '<div class="salle__fin"><p>Une autre envie ? Photo professionnelle, gender reveal, voiture : parlons-en.</p><div><a class="btn" href="#reserver" data-magnet>Me contacter</a></div></div>';
+    return '<a class="oeuvre" href="seances.html#' + u.id + '" style="--ar:' + PX.ar(k).toFixed(3) + '" data-couleur="' + PX.couleur(k) + '" data-curseur="voir" data-curseur-texte="Tarifs">' +
+      '<div class="oeuvre__cadre">' + PX.img(k, { sizes: '(min-width: 900px) 40vw, 80vw', alt: ambiance ? '' : undefined }) + (ambiance ? '<span class="ambiance-tag">Ambiance · photos à venir</span>' : '') + '<span class="oeuvre__reflet" aria-hidden="true"></span></div>' +
+      '<div class="oeuvre__legende"><span class="oeuvre__num" aria-hidden="true">' + String(i + 1).padStart(2, '0') + '</span><span class="oeuvre__nom">' + u.nom + '</span><span class="oeuvre__prix">' + prixDe(u) + '</span><span class="oeuvre__acc">' + u.accroche + '</span>' + (ambiance ? '' : PX.exif(k)) + '</div></a>';
+  }).join('') + '<div class="salle__fin"><p>Une autre envie ? Photo professionnelle, gender reveal, voiture : parlons-en.</p><div><a class="btn" href="#reserver" data-magnet>Me contacter</a></div></div>';
 
   const salle = $('.salle');
   const papier = [246, 238, 227];
@@ -28,22 +28,45 @@
     oeuvres.forEach((o) => { const r = o.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - cx); if (d < d0) { d0 = d; meilleur = o; } });
     if (meilleur && meilleur.dataset.couleur !== couleurCourante) {
       couleurCourante = meilleur.dataset.couleur;
-      salle.style.backgroundColor = melange(couleurCourante, 0.28);
+      salle.style.backgroundColor = melange(couleurCourante, 0.22);
     }
   };
+  /* progression « 03 / 11 » sous la piste */
+  const salleNum = $('#salle-num'), salleBarre = $('#salle-barre'), aide = $('.salle__aide');
+  const progression = (p) => {
+    const n = Math.min(oeuvres.length, Math.max(1, Math.round(p * (oeuvres.length - 1)) + 1));
+    if (salleNum) salleNum.textContent = String(n).padStart(2, '0') + ' / ' + String(oeuvres.length).padStart(2, '0');
+    if (salleBarre) salleBarre.style.transform = 'scaleX(' + Math.max(0.04, p).toFixed(3) + ')';
+    if (aide && p > 0.02) aide.hidden = true;
+  };
+  progression(0);
+  const wrap = $('.salle__piste-wrap');
   if (anime && !PX.etroit()) {
     const largeur = () => piste.scrollWidth - window.innerWidth;
-    G.to(piste, { x: () => -largeur(), ease: 'none', scrollTrigger: { trigger: '.salle__piste-wrap', start: 'center center', end: () => '+=' + largeur(), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1, onUpdate: teinter } });
+    /* la scène s'épingle juste sous l'en-tête, centrée dans l'espace restant */
+    const haut = () => { const e = (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--entete-h'), 10) || 64); const libre = window.innerHeight - e; const h = $('#salle-scene').offsetHeight; return 'top ' + Math.round(e + Math.max(0, (libre - h) / 2)) + 'px'; };
+    const st = G.to(piste, { x: () => -largeur(), ease: 'none', scrollTrigger: { trigger: '#salle-scene', start: haut, end: () => '+=' + Math.round(largeur() * 0.8), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1, onUpdate: (t) => { teinter(); progression(t.progress); } } }).scrollTrigger;
+    /* clavier : une carte qui reçoit le focus est amenée à l'écran */
+    piste.addEventListener('focusin', (e) => {
+      const o = e.target.closest('.oeuvre, .salle__fin'); if (!o) return;
+      const centre = o.offsetLeft + o.offsetWidth / 2 - window.innerWidth / 2;
+      const p = Math.max(0, Math.min(1, centre / largeur()));
+      const y = st.start + p * (st.end - st.start);
+      if (PX.lenis) PX.lenis.scrollTo(y, { immediate: true }); else window.scrollTo(0, y);
+      wrap.scrollLeft = 0;
+    });
     oeuvres.forEach((o, i) => {
       const cadre = $('.oeuvre__cadre', o), img = $('img', cadre);
-      G.fromTo(img, { scale: 1.16 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.salle__piste-wrap', start: 'center center', end: () => '+=' + largeur(), scrub: true } });
+      G.fromTo(img, { scale: 1.16 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '#salle-scene', start: haut, end: () => '+=' + Math.round(largeur() * 0.8), scrub: true } });
       const rx = G.quickTo(cadre, 'rotationY', { duration: 0.6 }), ry = G.quickTo(cadre, 'rotationX', { duration: 0.6 });
       cadre.addEventListener('pointermove', (e) => { const r = cadre.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height; rx((x - 0.5) * 9); ry((0.5 - y) * 7); cadre.style.setProperty('--rx', x * 100 + '%'); cadre.style.setProperty('--ry', y * 100 + '%'); });
       cadre.addEventListener('pointerleave', () => { rx(0); ry(0); });
       G.set(cadre, { transformPerspective: 900 });
     });
   } else {
-    $('.salle__piste-wrap').addEventListener('scroll', teinter, { passive: true });
+    /* sans épinglage (téléphone ou mode calme) : piste qui défile au doigt ou à la molette */
+    salle.classList.add('salle--libre');
+    wrap.addEventListener('scroll', () => { teinter(); progression(wrap.scrollLeft / Math.max(1, wrap.scrollWidth - wrap.clientWidth)); }, { passive: true });
   }
   teinter();
 
@@ -109,7 +132,7 @@
   const proj = (a) => [(a.lon - O.lon) * 111.32 * Math.cos(O.lat * Math.PI / 180), -(a.lat - O.lat) * 110.57];
   const villes = D.villes.map((v) => Object.assign({}, v, { d: km(v), p: proj(v) })).sort((a, b) => a.d - b.d);
   const carte = $('#carte');
-  const decal = { 'Cons-la-Grandville': null, 'Mont-Saint-Martin': [1.4, -1.2], 'Longwy': [-1.3, -0.6, 'end'], 'Longuyon': [-1.3, 0.6, 'end'], 'Audun-le-Tiche': [1.4, 1.2], 'Villerupt': [-1.3, 2.7, 'end'], 'Esch-sur-Alzette (LU)': [1.4, -1.2] };
+  const decal = { 'Cons-la-Grandville': null, 'Mont-Saint-Martin': [1.4, -1.2], 'Longwy': [-1.3, -0.6, 'end'], 'Longuyon': [-1.3, 0.6, 'end'], 'Audun-le-Tiche': [1.4, 1.2], 'Villerupt': [-1.3, 2.7, 'end'], 'Audun-le-Roman': [-1.3, 0.6, 'end'], 'Esch-sur-Alzette (LU)': [1.4, -1.2] };
   let svg = '<g id="rayons" stroke="rgba(233,184,114,.25)" stroke-width=".15">';
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; svg += '<line x1="' + (Math.cos(a) * 3).toFixed(2) + '" y1="' + (Math.sin(a) * 3).toFixed(2) + '" x2="' + (Math.cos(a) * 15).toFixed(2) + '" y2="' + (Math.sin(a) * 15).toFixed(2) + '"/>'; }
   svg += '</g><circle id="cercle15" r="15" fill="rgba(233,184,114,.08)" stroke="#E9B872" stroke-width=".35" stroke-dasharray="1.2 .8"/><text x="0" y="-16.2" font-size="1.7" text-anchor="middle" fill="#E9B872" style="letter-spacing:.1em">15 KM INCLUS</text><path id="trajet" fill="none" stroke="#E9B872" stroke-width=".4" stroke-linecap="round"/>';
@@ -122,7 +145,7 @@
   svg += '<circle r="1.3" fill="#C8794E" stroke="#F2E4D0" stroke-width=".3"/><text x="0" y="3.4" font-size="2.1" text-anchor="middle" font-weight="700">Ugny</text>';
   carte.innerHTML = svg;
   const select = $('#calc-ville'), libre = $('#calc-libre'), curseur = $('#calc-km'), curseurVal = $('#calc-km-val');
-  select.innerHTML = villes.map((v, i) => '<option value="' + i + '">' + v.nom + ' (' + Math.round(v.d) + ' km)</option>').join('') + '<option value="autre">Autre commune : régler la distance</option>';
+  select.innerHTML = villes.map((v, i) => '<option value="' + i + '">' + v.nom + ' (' + Math.round(v.d) + ' km)</option>').join('') + '<option value="autre">Autre commune : régler la distance</option>';
   select.value = String(villes.findIndex((v) => v.nom === 'Thionville'));
   const trajet = $('#trajet');
   const resultat = () => {
@@ -136,7 +159,7 @@
     PX.compter($('#calc-dist'), d, { fmt: (n) => Math.round(n) + ' km', duree: 0.8 });
     if (frais === 0) $('#calc-frais').textContent = 'Inclus';
     else PX.compter($('#calc-frais'), frais, { fmt: (n) => PX.euros(Math.round(n)), duree: 0.8 });
-    $('#calc-detail').textContent = frais === 0 ? 'Dans le rayon de 15 km : déplacement compris dans le tarif. Estimation à vol d’oiseau, confirmée à la réservation.' : Math.round(au) + ' km au-delà des 15 km × 2 (aller-retour) × 0,50 € = ' + PX.euros(frais) + '. Estimation à vol d’oiseau : la distance routière réelle est confirmée à la réservation.';
+    $('#calc-detail').textContent = frais === 0 ? 'Dans le rayon de 15 km : déplacement compris dans le tarif. Estimation à vol d’oiseau, confirmée à la réservation.' : Math.round(au) + ' km au-delà des 15 km × 2 (aller-retour) × 0,50 € = ' + PX.euros(frais) + '. Estimation à vol d’oiseau : la distance routière réelle est confirmée à la réservation.';
     $$('.ville', carte).forEach((g) => g.style.opacity = !v || g.dataset.nom === v.nom ? 1 : 0.5);
     if (v) {
       const [x, y] = v.p; const mx = x / 2 - y * 0.25, my = y / 2 + x * 0.25;
@@ -147,22 +170,23 @@
   select.addEventListener('change', resultat);
   curseur.addEventListener('input', resultat);
   $('#calcul').addEventListener('submit', (e) => e.preventDefault());
+  resultat();
   if (anime) {
-    G.fromTo('#cercle15', { attr: { r: 0 } }, { attr: { r: 15 }, duration: 1.6, ease: 'power3.out', scrollTrigger: { trigger: carte, start: 'top 80%', once: true }, onComplete: resultat });
-    G.from('#rayons line', { scale: 0, transformOrigin: '0 0', duration: 1.2, stagger: 0.03, scrollTrigger: { trigger: carte, start: 'top 80%', once: true } });
-    G.from('.ville', { opacity: 0, scale: 0, transformOrigin: 'center', duration: 0.6, stagger: 0.05, scrollTrigger: { trigger: carte, start: 'top 80%', once: true } });
-  } else resultat();
+    G.fromTo('#cercle15', { attr: { r: 0 } }, { attr: { r: 15 }, duration: 1.6, ease: 'power3.out', scrollTrigger: { trigger: carte, start: 'top 80%', toggleActions: 'play none none none' }, onComplete: resultat });
+    G.from('#rayons line', { scale: 0, transformOrigin: '0 0', duration: 1.2, stagger: 0.03, scrollTrigger: { trigger: carte, start: 'top 80%', toggleActions: 'play none none none' } });
+    G.from('.ville', { opacity: 0, scale: 0, transformOrigin: 'center', duration: 0.6, stagger: 0.05, scrollTrigger: { trigger: carte, start: 'top 80%', toggleActions: 'play none none none' } });
+  }
 
   /* ---------- Liz : fuite de lumière argentique ---------- */
   const fuite = $('.liz__portrait .fuite');
-  if (anime && fuite) G.timeline({ scrollTrigger: { trigger: '.liz__portrait', start: 'top 70%', once: true } }).fromTo(fuite, { xPercent: -60, opacity: 0 }, { xPercent: 50, opacity: 0.9, duration: 1.4, ease: 'power2.in' }).to(fuite, { opacity: 0, duration: 1.2 }, '-=0.3');
+  if (anime && fuite) G.timeline({ scrollTrigger: { trigger: '.liz__portrait', start: 'top 70%', toggleActions: 'play none none none' } }).fromTo(fuite, { xPercent: -60, opacity: 0 }, { xPercent: 50, opacity: 0.9, duration: 1.4, ease: 'power2.in' }).to(fuite, { opacity: 0, duration: 1.2 }, '-=0.3');
 
   /* ---------- Avis : mise au point mot par mot ---------- */
   const avis = D.avis[0];
   const citation = $('#citation');
   citation.innerHTML = avis.texte.split(' ').map((m) => '<span class="mot">' + m + '</span>').join(' ');
   $('#citation-nom').textContent = avis.nom;
-  if (anime) G.fromTo($$('.mot', citation), { filter: 'blur(8px)', opacity: 0.25 }, { filter: 'blur(0px)', opacity: 1, stagger: 0.04, ease: 'none', scrollTrigger: { trigger: citation, start: 'top 80%', end: 'bottom 55%', scrub: true } });
+  if (anime) G.fromTo($$('.mot', citation), { filter: 'blur(6px)', opacity: 0.35 }, { filter: 'blur(0px)', opacity: 1, stagger: 0.025, duration: 0.6, ease: 'power2.out', clearProps: 'filter', scrollTrigger: { trigger: citation, start: 'top 85%', toggleActions: 'play none none none' } });
 
   /* ---------- Carte cadeau : feuille d'or et montants ---------- */
   const carteC = $('#carte-accueil');
@@ -172,24 +196,25 @@
     scene.addEventListener('pointermove', (e) => { const r = carteC.getBoundingClientRect(); incliner((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height); });
     scene.addEventListener('pointerleave', () => incliner(0.5, 0.5));
     ST.create({ trigger: '.cadeau', start: 'top bottom', end: 'bottom top', onUpdate: (s) => { if (!PX.souris) incliner(0.2 + s.progress * 0.6, 0.35 + Math.sin(s.progress * 6) * 0.15); } });
-    const montantEl = $('#montant-accueil'); const vals = D.carteCadeau.montants; let k = 2;
-    setInterval(() => {
-      if (document.hidden) return;
-      k = (k + 1) % vals.length; const de = +montantEl.textContent;
-      PX.compter(montantEl, vals[k], { de, duree: 0.9 });
-    }, 2600);
+    /* le montant s'affiche une fois, sans boucle ni valeurs intermédiaires fantaisistes */
+    const montantEl = $('#montant-accueil');
+    let montantVu = false;
+    ST.create({ trigger: '.cadeau', start: 'top 75%', onEnter: () => { if (montantVu) return; montantVu = true; G.fromTo(montantEl, { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.8 }); } });
   }
 
   /* ---------- Réservation en 4 vues ---------- */
   const form = $('#form-resa');
   const selU = $('#r-univers'), boiteF = $('#r-formules');
-  selU.innerHTML = '<option value="">Choisir une prestation</option>' + D.univers.map((u) => '<option value="' + u.id + '">' + u.nom + '</option>').join('') + '<option value="autre">Autre demande (photo pro, gender reveal, voiture…)</option>';
+  selU.innerHTML = '<option value="">Choisir une prestation</option>' + D.univers.map((u) => '<option value="' + u.id + '">' + u.nom + '</option>').join('') + '<option value="mini">Mini-séance au home studio</option><option value="autre">Autre demande (photo pro, gender reveal, voiture…)</option>';
   const remplirFormules = (choix) => {
     const u = D.univers.find((x) => x.id === selU.value);
-    if (!u || !u.formules.length) { boiteF.innerHTML = '<p class="note-maquette">' + (u && u.devis ? 'Prestation sur devis personnalisé.' : 'Précisez votre demande dans le message.') + '</p>'; return; }
+    if (!selU.value) { boiteF.innerHTML = '<p class="note-maquette">Choisissez d’abord une prestation.</p>'; return; }
+    if (!u || !u.formules.length) { boiteF.innerHTML = '<p class="note-maquette">' + (selU.value === 'mini' ? 'Je vous réponds avec les prochaines dates, les thèmes et les tarifs des mini-séances.' : u && u.devis ? 'Prestation sur devis personnalisé.' : 'Précisez votre demande dans le message.') + '</p>'; return; }
     boiteF.innerHTML = u.formules.map((f, i) => '<label><input type="radio" name="formule" value="' + PX.echapper(f.nom) + '"' + ((choix ? f.nom === choix : i === 0) ? ' checked' : '') + '><b>' + f.nom + '</b><small>' + PX.euros(f.prix) + (f.unite ? ' ' + f.unite : '') + (f.photos ? ' · ' + f.photos + ' photos' : '') + '</small></label>').join('');
   };
   selU.addEventListener('change', () => remplirFormules());
+  form.addEventListener('input', () => { erreur.hidden = true; });
+  form.addEventListener('change', () => { erreur.hidden = true; });
   let pre = null; try { pre = JSON.parse(PX.store.get('prefill') || 'null'); } catch (e) { pre = null; }
   if (pre && pre.univers) { selU.value = pre.univers; remplirFormules(pre.formule); PX.store.del('prefill'); if (pre.message) $('#r-message').value = pre.message; }
   else remplirFormules();
@@ -198,11 +223,11 @@
   let vue = 0;
   const valider = (i) => {
     if (i === 0 && !selU.value) return 'Choisissez une prestation pour continuer.';
-    if (i === 1 && !$('#r-date').value && !$('#r-flex').checked) return 'Indiquez une date, ou cochez « Mes dates sont flexibles ».';
+    if (i === 1 && !$('#r-date').value && !$('#r-flex').checked) return 'Indiquez une date, ou cochez « Mes dates sont flexibles ».';
     if (i === 3) {
       if (!$('#r-prenom').value.trim()) return 'Indiquez votre prénom.';
       const mail = $('#r-email').value.trim(), tel = $('#r-tel').value.trim();
-      if (!mail && !tel) return 'Indiquez un e-mail ou un téléphone pour que Liz puisse vous répondre.';
+      if (!mail && !tel) return 'Indiquez un e-mail ou un téléphone pour que je puisse vous répondre.';
       if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return 'L’adresse e-mail semble incomplète.';
     }
     return '';
@@ -213,7 +238,15 @@
     puces.forEach((p, j) => { p.toggleAttribute('aria-current', j === i); if (j === i) p.setAttribute('aria-current', 'step'); p.classList.toggle('fait', j < i); });
     prec.hidden = i === 0; suiv.hidden = i === 3; envoyer.hidden = i !== 3; erreur.hidden = true;
     if (anime) G.fromTo(vuesF[i], { x: 24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 });
+    if (form.contains(document.activeElement)) vuesF[i].focus({ preventScroll: true });
   };
+  vuesF.forEach((v) => v.setAttribute('tabindex', '-1'));
+  const auj = new Date(); $('#r-date').min = auj.getFullYear() + '-' + String(auj.getMonth() + 1).padStart(2, '0') + '-' + String(auj.getDate()).padStart(2, '0');
+  /* liens qui pré-remplissent la demande (ex. mini-séances) */
+  document.addEventListener('click', (e) => {
+    const l = e.target.closest('[data-prefill]'); if (!l) return;
+    selU.value = l.dataset.prefill; remplirFormules(); montrer(0);
+  });
   const avancer = () => { const m = valider(vue); if (m) { erreur.textContent = m; erreur.hidden = false; return; } montrer(vue + 1); };
   suiv.addEventListener('click', avancer);
   prec.addEventListener('click', () => montrer(vue - 1));
@@ -226,12 +259,19 @@
     const f = form.querySelector('input[name="formule"]:checked');
     const lieu = form.querySelector('input[name="lieu"]:checked');
     const date = $('#r-date').value ? new Date($('#r-date').value + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'dates flexibles';
-    $('#r-resume').textContent = 'Récapitulatif : ' + (u ? u.nom : 'Autre demande') + (f ? ', formule ' + f.value : '') + ' · ' + date + ' · ' + (lieu ? lieu.value : '') + '.';
+    $('#r-resume').textContent = 'Récapitulatif : ' + (u ? u.nom : selU.options[selU.selectedIndex].text) + (f ? ', formule ' + f.value : '') + ' · ' + date + ' · ' + (lieu ? lieu.value : '') + '.';
     vuesF.forEach((v) => { v.hidden = true; }); $('.pellicule', form).hidden = true; $('.form-nav', form).hidden = true; erreur.hidden = true;
     $('#r-merci').hidden = false;
+    const t = $('#r-merci h3'); t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true });
+    PX.allerA(form);
   });
   $('#r-nouveau').addEventListener('click', () => { form.reset(); remplirFormules(); $('#r-merci').hidden = true; $('.pellicule', form).hidden = false; $('.form-nav', form).hidden = false; montrer(0); });
   form.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.tagName === 'INPUT' && vue < 3) { e.preventDefault(); avancer(); } });
+
+  /* ---------- Ouverture : texte alternatif selon la photo affichée ---------- */
+  const photoOuv = $('.ouverture__photo img');
+  const majAlt = () => { if (photoOuv && /portrait-automne-04/.test(photoOuv.currentSrc || '')) photoOuv.alt = (window.PX_IMG['portrait-automne-04'] || {}).alt || photoOuv.alt; };
+  if (photoOuv) { if (photoOuv.complete) majAlt(); photoOuv.addEventListener('load', majAlt); }
 
   /* ---------- Ouverture orchestrée ---------- */
   const titre = $('.ouverture__titre');
@@ -241,8 +281,8 @@
   }
   PX.pret.then(() => {
     PX.quandGL((gl) => {
-      const cadre = PX.etroit() ? $('.photo-mobile') : $('.photo-bureau');
-      if (gl) { gl.developper(cadre, { duree: 2.4, papier: '#1D1511' }); gl.soleil($('.ouverture__soleil')); }
+      const cadre = $('.ouverture__photo');
+      if (gl) { gl.developper(cadre, { duree: 1.4, papier: '#1D1511' }); gl.soleil($('.ouverture__soleil')); }
     });
     if (anime) {
       const tl = G.timeline({ delay: 0.25 });
@@ -253,5 +293,24 @@
       G.to('.ouverture__cadre', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.ouverture', start: 'top top', end: 'bottom top', scrub: true } });
     }
     PX.reveler();
+  });
+})();
+
+/* Questions fréquentes : ouverture en douceur */
+(function () {
+  const PX = window.PX, G = window.gsap;
+  document.querySelectorAll('.faq__item').forEach((d) => {
+    const rep = d.querySelector('.faq__rep');
+    d.querySelector('summary').addEventListener('click', (e) => {
+      if (!G || PX.calme) return;
+      e.preventDefault();
+      if (d.open) {
+        G.to(rep, { height: 0, opacity: 0, duration: 0.4, ease: 'power2.inOut', onComplete: () => { d.open = false; G.set(rep, { clearProps: 'height,opacity' }); if (window.ScrollTrigger) window.ScrollTrigger.refresh(); } });
+      } else {
+        document.querySelectorAll('.faq__item[open]').forEach((o) => { if (o !== d) { const r = o.querySelector('.faq__rep'); G.to(r, { height: 0, opacity: 0, duration: 0.35, onComplete: () => { o.open = false; G.set(r, { clearProps: 'height,opacity' }); } }); } });
+        d.open = true;
+        G.fromTo(rep, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.5, ease: 'power2.out', onComplete: () => { G.set(rep, { clearProps: 'height' }); if (window.ScrollTrigger) window.ScrollTrigger.refresh(); } });
+      }
+    });
   });
 })();

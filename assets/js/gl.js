@@ -95,7 +95,7 @@ function developperCSS(img, duree) {
 /* Développe la photo contenue dans `cadre` comme un tirage dans le bain, puis rend la vraie image. */
 function developper(cadre, o) {
   o = o || {};
-  const duree = o.duree || 2.4;
+  const duree = o.duree || 1.6;
   const img = cadre.querySelector('img:not([hidden])') || cadre.querySelector('img');
   if (!img || PX.calme || !G) return Promise.resolve();
   if (!GL_OK) return developperCSS(img, duree);
@@ -117,14 +117,13 @@ function developper(cadre, o) {
     const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
     cadre.appendChild(canvas);
     renderer.render({ scene: mesh });
-    img.style.visibility = 'hidden';
+    /* la vraie photo reste affichée sous le calque : elle est peinte tout de suite (LCP) */
     const t0 = performance.now();
     const etat = { p: 0 };
     const rendre = () => { program.uniforms.uT.value = (performance.now() - t0) / 1000; program.uniforms.uP.value = etat.p; renderer.render({ scene: mesh }); };
     G.to(etat, {
       p: 1, duration: duree, delay: o.delai || 0, ease: 'power2.inOut', onUpdate: rendre,
       onComplete: () => {
-        img.style.visibility = '';
         G.to(canvas, { opacity: 0, duration: 0.25, onComplete: () => {
           canvas.remove();
           const perte = gl.getExtension('WEBGL_lose_context'); if (perte) perte.loseContext();
@@ -137,7 +136,8 @@ function developper(cadre, o) {
 
 /* Soleil rasant qui suit le pointeur au-dessus de la photo d'ouverture. */
 function soleil(conteneur) {
-  if (!conteneur || PX.calme || !G) return;
+  /* pas de soleil animé sur écran tactile : la batterie passe avant l'effet */
+  if (!conteneur || PX.calme || !G || !PX.souris) return;
   const cible = { x: 0.78, y: 0.28 }, pos = { x: 0.9, y: 0.12 };
   let intensite = { v: 0 };
   let dessiner;

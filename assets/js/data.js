@@ -46,7 +46,7 @@ window.PX_DATA = {
       id: "portraits", nom: "Portraits", groupe: "Portraits",
       accroche: "Solo, duo, en famille ou entre amis",
       texte: "Une séance personnalisée, en intérieur, en extérieur ou les deux selon la formule choisie.",
-      inclus: ["Jusqu’à 4 personnes", "1 lieu : intérieur ou extérieur", "Impressions de la séance en 10x15"],
+      inclus: ["Jusqu’à 4 personnes", "1 lieu : intérieur ou extérieur", "Impressions de la séance en 10 × 15"],
       photos: ["portrait-automne-04", "portrait-homme-verdure", "portrait-automne-02", "portrait-homme-mur-pierre", "portrait-automne-01", "portrait-clair-obscur", "portrait-automne-03", "portrait-homme-mur-pierre-nb"],
       formules: [
         { nom: "Essentielle", prix: 80, photos: 3, lieu: "En extérieur ou intérieur" },
@@ -61,8 +61,8 @@ window.PX_DATA = {
     {
       id: "anniversaire", nom: "Anniversaire", groupe: "Portraits",
       accroche: "De 1 à 3 ans, voire plus",
-      texte: "Une séance pleine de douceur pour immortaliser une nouvelle année. Décor personnalisé, jolies photos et, pour la formule complète, un adorable moment smash cake à partager et à savourer !",
-      inclus: ["Décor personnalisé", "Impressions de la séance en 10x15"],
+      texte: "Une séance pleine de douceur pour immortaliser une nouvelle année. Décor personnalisé, jolies photos et, pour la formule complète, un adorable moment smash cake à partager et à savourer !",
+      inclus: ["Décor personnalisé", "Impressions de la séance en 10 × 15"],
       photos: [], ambiance: "grok-anniversaire-confettis",
       formules: [
         { nom: "Mini", prix: 90, photos: 3, lieu: "En extérieur ou intérieur" },
@@ -78,7 +78,7 @@ window.PX_DATA = {
       id: "grossesse", nom: "Grossesse", groupe: "Portraits",
       accroche: "Immortalisez votre grossesse, un souvenir précieux",
       texte: "Immortalisez la douceur de votre grossesse, votre ventre rond et les premiers liens avec votre bébé, lors d’une séance naturelle et pleine d’émotions, seule, en couple ou en famille.",
-      inclus: ["Seule, en couple ou en famille", "Impressions de la séance en 10x15"],
+      inclus: ["Seule, en couple ou en famille", "Impressions de la séance en 10 × 15"],
       photos: ["grossesse-couple-couleur", "grossesse-couple-nb", "grossesse-ventre-nb"],
       formules: [
         { nom: "Douceur", prix: 160, photos: 5, lieu: "En extérieur ou intérieur" },
@@ -91,7 +91,7 @@ window.PX_DATA = {
       id: "nouveau-ne", nom: "Nouveau-né", groupe: "Portraits",
       accroche: "Capturez les premiers instants de bébé et ses petits détails",
       texte: "Immortalisez la douceur de votre nouveau-né, ses petits détails et ses premiers jours de vie à travers une séance, pour conserver à jamais ces précieux souvenirs.",
-      inclus: ["Séance en intérieur", "Impression de la séance en 10x15"],
+      inclus: ["Séance en intérieur", "Impressions de la séance en 10 × 15"],
       photos: ["naissance-parents-nb", "naissance-bras-papa", "naissance-baillement-nb", "naissance-bras-papa-nb"],
       formules: [
         { nom: "Éveil", prix: 160, photos: 5, lieu: "En intérieur" },
@@ -104,7 +104,7 @@ window.PX_DATA = {
       id: "grossesse-naissance", nom: "Grossesse + nouveau-né", groupe: "Portraits",
       accroche: "De l’attente aux premiers instants",
       texte: "Immortalisez votre histoire, de la douceur de votre grossesse aux premiers jours de votre bébé. Deux séances complémentaires pour préserver ces souvenirs précieux et raconter les débuts de votre vie ensemble.",
-      inclus: ["1 séance grossesse", "1 séance nouveau-né", "Impression de la séance en 10x15 au total"],
+      inclus: ["1 séance grossesse", "1 séance nouveau-né", "Impressions de la séance en 10 × 15 au total"],
       photos: ["grossesse-couple-nb", "naissance-parents-nb", "grossesse-ventre-nb", "naissance-baillement-nb"],
       formules: [
         { nom: "Amour", prix: 300, photos: 10, lieu: "En extérieur ou intérieur", note: "au total" },
@@ -117,7 +117,7 @@ window.PX_DATA = {
       id: "boudoir", nom: "Boudoir", groupe: "Portraits",
       accroche: "Une parenthèse rien qu’à vous, pour révéler votre beauté et votre confiance",
       texte: "Une séance boudoir douce et élégante, en solo ou en duo, pour révéler votre beauté, votre confiance et votre personnalité à travers des images qui vous ressemblent.",
-      inclus: ["En solo ou en duo", "À votre domicile ou dans un Airbnb (en option)", "Impressions de la séance en 10x15"],
+      inclus: ["En solo ou en duo", "À votre domicile ou dans un Airbnb (en option)", "Impressions de la séance en 10 × 15"],
       photos: [], ambiance: "grok-boudoir-drap-soie",
       formules: [
         { nom: "Charme", prix: 130, photos: 5, lieu: "À votre domicile ou dans un Airbnb (en option)" },
@@ -159,7 +159,7 @@ window.PX_DATA = {
       etapes: ["Cérémonie", "Groupe & famille", "Coffret de tirages"],
       formules: [
         { nom: "Première Lumière", prix: 290, couvre: [0, 1], liste: ["Reportage cérémonie (église)", "Photos de groupe, individuelles, en famille…", "Clé USB en bois gravée + galerie en ligne HD"] },
-        { nom: "Jour Sacré", prix: 390, couvre: [0, 1, 2], liste: ["Reportage cérémonie (église)", "Photos de groupe, individuelles, en famille…", "Clé USB en bois gravée + galerie en ligne HD", "Coffret en bois gravé avec 60/70 tirages en 10x15 cm"] }
+        { nom: "Jour Sacré", prix: 390, couvre: [0, 1, 2], liste: ["Reportage cérémonie (église)", "Photos de groupe, individuelles, en famille…", "Clé USB en bois gravée + galerie en ligne HD", "Coffret en bois gravé avec 60/70 tirages en 10 × 15 cm"] }
       ],
       options: [
         { id: "famille", nom: "Séance famille après baptême", prix: 100 },
@@ -172,7 +172,7 @@ window.PX_DATA = {
       id: "animaux", nom: "Animaux", groupe: "Animaux",
       accroche: "Immortalisons les liens qui vous unissent",
       texte: "Une séance personnalisée, en intérieur, en extérieur ou les deux selon la formule choisie, pour garder une trace de leur personnalité, de leur douceur et de tous ces petits moments qui vous rendent inséparables.",
-      inclus: ["Jusqu’à 4 animaux", "1 lieu : intérieur ou extérieur", "Impressions de la séance en 10x15"],
+      inclus: ["Jusqu’à 4 animaux", "1 lieu : intérieur ou extérieur", "Impressions de la séance en 10 × 15"],
       photos: ["animaux-berger-heure-doree", "animaux-beagle-automne", "animaux-berger-prairie", "animaux-beagle-allonge"],
       formules: [
         { nom: "Patounes", prix: 80, photos: 3, lieu: "En extérieur ou intérieur" },
@@ -188,7 +188,7 @@ window.PX_DATA = {
     {
       id: "restauration", nom: "Restauration de photos", groupe: "Restauration",
       accroche: "Vos souvenirs méritent de traverser le temps",
-      texte: "Redonnez une nouvelle vie à vos photos anciennes, abîmées ou oubliées. Il s’agit d’une restauration visuelle, pas d’une re-création complète : l’objectif est de sublimer l’existant, pas de réinventer l’image.",
+      texte: "Redonnez une nouvelle vie à vos photos anciennes, abîmées ou oubliées. Il s’agit d’une restauration visuelle, pas d’une re-création complète : l’objectif est de sublimer l’existant, pas de réinventer l’image.",
       inclus: ["Correction des couleurs (déjaunissement, équilibre des tons)", "Suppression de poussières, taches, plis ou rayures", "Reconstitution de petites zones manquantes", "Amélioration globale de la netteté et du contraste"],
       note: "Certaines dégradations trop importantes ou parties totalement effacées ne peuvent pas être récupérées avec précision. La photo doit être en état d’être scannée ou fournie en haute définition.",
       photos: [], ambiance: "grok-restauration-tirages-anciens", parPhoto: 25,
@@ -198,7 +198,7 @@ window.PX_DATA = {
     {
       id: "entreprises", nom: "Entreprises & projets", groupe: "Sur mesure",
       accroche: "Mettons en lumière ce qui vous rend unique",
-      texte: "Vous êtes un professionnel et souhaitez mettre en valeur votre entreprise, vos collaborateurs ou faire couvrir un événement ? Vous êtes une association ou une commune et recherchez une photographe pour un reportage ? Vous avez un projet personnel en tête, comme une séance automobile ou un gender reveal ? Chaque demande étant unique, les prestations sont réalisées sur devis personnalisé.",
+      texte: "Vous êtes un professionnel et souhaitez mettre en valeur votre entreprise, vos collaborateurs ou faire couvrir un événement ? Vous êtes une association ou une commune et recherchez une photographe pour un reportage ? Vous avez un projet personnel en tête, comme une séance automobile ou un gender reveal ? Chaque demande étant unique, les prestations sont réalisées sur devis personnalisé.",
       inclus: ["Portraits professionnels", "Mise en valeur du savoir-faire", "Reportage d’événement", "Séance automobile, gender reveal et autres envies"],
       photos: ["pro-portrait-costume"], ambiance: "grok-atelier-savoir-faire", devis: true,
       formules: [],
@@ -236,7 +236,7 @@ window.PX_DATA = {
     { id: "album-19", cat: "albums", nom: "Album 19 × 19 cm", prix: 85, rendu: "album", carre: true, acompleter: ["Détails et options"], livraison: 20 },
     { id: "album-15", cat: "albums", nom: "Album 15 × 15 cm", prix: 75, rendu: "album", carre: true, acompleter: ["Détails et options"], livraison: 20 },
     { id: "coffret", cat: "tirages", nom: "Coffret artisanal en bois rustique 10 × 15 cm", prix: 50, rendu: "coffret",
-      texte: "Bois rustique foncé, mousse protectrice et ficelle naturelle pour vos tirages 10x15. Gravure des prénoms, d’une date ou d’un petit message.",
+      texte: "Bois rustique foncé, mousse protectrice et ficelle naturelle pour vos tirages 10 × 15. Gravure des prénoms, d’une date ou d’un petit message.",
       formats: ["Boîte seule", "Boîte + clé USB 16 Go", "Boîte + clé USB 32 Go", "Boîte + clé USB 64 Go"],
       acompleter: ["Prix des options clé USB et gravure"], livraison: 10 },
     { id: "tirages", cat: "tirages", nom: "Lot de tirages photos", prix: 20, des: true, rendu: "tirages",

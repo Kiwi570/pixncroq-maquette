@@ -36,13 +36,13 @@
   PX.img = (key, o) => {
     o = o || {}; const m = IMG[key]; if (!m) return '';
     const alt = o.alt !== undefined ? o.alt : m.alt;
-    return '<img src="' + PX.url(key, o.w || 960) + '" srcset="' + PX.srcset(key) + '" sizes="' + (o.sizes || '(min-width: 900px) 50vw, 100vw') + '" width="' + m.w + '" height="' + m.h + '" alt="' + alt.replace(/"/g, '&quot;') + '"' + (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + (o.cls ? ' class="' + o.cls + '"' : '') + ' data-px="' + key + '">';
+    return '<img src="' + PX.url(key, o.w || 960) + '" srcset="' + PX.srcset(key) + '" sizes="' + (o.sizes || '(min-width: 900px) 50vw, 100vw') + '" width="' + m.w + '" height="' + m.h + '" alt="' + alt.replace(/"/g, '&quot;') + '"' + (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" style="background-color:' + m.color + '"' + (o.cls ? ' class="' + o.cls + '"' : '') + ' data-px="' + key + '">';
   };
   PX.ar = (key) => (IMG[key] ? IMG[key].w / IMG[key].h : 1);
   PX.couleur = (key) => (IMG[key] ? IMG[key].color : '#c9b49b');
   PX.exif = (key) => {
     const e = IMG[key] && IMG[key].exif; if (!e) return '';
-    return '<span class="exif" aria-label="Réglages de prise de vue"><span>' + e.f + '</span><span>' + e.v + '</span><span>' + e.iso + '</span><span>' + e.mm + '</span></span>';
+    return '<span class="exif" aria-hidden="true"><span>' + e.f + '</span><span>' + e.v + '</span><span>' + e.iso + '</span><span>' + e.mm + '</span></span>';
   };
   PX.euros = (n, dec) => n.toLocaleString('fr-FR', { minimumFractionDigits: dec ? 2 : 0, maximumFractionDigits: dec ? 2 : 0 }) + ' €';
   PX.echapper = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -71,10 +71,13 @@
     if (PX.lenis) PX.lenis.scrollTo(el, { offset: decalage, duration: 1.4 });
     else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + decalage, behavior: PX.calme ? 'auto' : 'smooth' });
   };
+  const cheminPage = (u) => u.pathname.replace(/\/index(\.html)?$/, '/').replace(/\.html$/, '');
   document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="#"]');
-    if (!a || a.getAttribute('href').length < 2 || a.hasAttribute('data-hash')) return;
-    const el = document.querySelector(a.getAttribute('href'));
+    const a = e.target.closest('a[href*="#"]');
+    if (!a || a.hasAttribute('data-hash') || a.target === '_blank') return;
+    let u; try { u = new URL(a.getAttribute('href'), window.location.href); } catch (err) { return; }
+    if (u.origin !== window.location.origin || cheminPage(u) !== cheminPage(window.location) || u.hash.length < 2) return;
+    const el = document.getElementById(decodeURIComponent(u.hash.slice(1)));
     if (!el) return;
     e.preventDefault();
     fermerMenu();
@@ -145,7 +148,7 @@
   let vueActive = 0, bonus = 0;
   const ecrireCompteur = (n, nom) => {
     if (!compteurNum) return;
-    const txt = String(Math.min(36, n)).padStart(2, '0');
+    const txt = String(Math.min(Math.max(vues.length, 1), n)).padStart(2, '0');
     if (G && !PX.calme && compteurNum.textContent !== txt) {
       const s = document.createElement('span'); s.textContent = txt;
       const ancien = compteurNum.firstElementChild;
@@ -155,46 +158,85 @@
     } else compteurNum.innerHTML = '<span>' + txt + '</span>';
     if (compteurNom && nom) compteurNom.textContent = nom;
   };
-  function avancerCompteur(d) { bonus += d; ecrireCompteur(vueActive + 1 + bonus, null); }
+  function avancerCompteur() { /* le déclencheur ne fausse plus le compteur de sections */ }
+  const totalVues = document.querySelector('.compteur__total');
+  if (totalVues) totalVues.textContent = '/' + String(vues.length).padStart(2, '0');
   if (vues.length && G) {
-    vues.forEach((v, i) => {
-      window.ScrollTrigger.create({ trigger: v, start: 'top 55%', end: 'bottom 55%', onToggle: (s) => { if (s.isActive) { vueActive = i; ecrireCompteur(i + 1 + bonus, v.dataset.vue); } } });
+    window.addEventListener('load', () => {
+      vues.forEach((v, i) => {
+        window.ScrollTrigger.create({ trigger: v, start: 'top 55%', end: 'bottom 55%', refreshPriority: -1, onToggle: (s) => { if (s.isActive) { vueActive = i; ecrireCompteur(i + 1 + bonus, v.dataset.vue); } } });
+      });
+      window.ScrollTrigger.sort(); window.ScrollTrigger.refresh();
     });
   }
   ecrireCompteur(1, vues[0] ? vues[0].dataset.vue : '');
 
-  const btnCalme = document.getElementById('btn-calme');
-  if (btnCalme) {
-    btnCalme.setAttribute('aria-pressed', PX.calme ? 'true' : 'false');
-    if (PX.reduit) btnCalme.title = 'Votre appareil demande déjà de réduire les animations';
-    btnCalme.addEventListener('click', () => {
+  const btnsCalme = document.querySelectorAll('[data-action="calme"]');
+  btnsCalme.forEach((b) => {
+    b.setAttribute('aria-pressed', PX.calme ? 'true' : 'false');
+    if (PX.reduit) b.title = 'Votre appareil demande déjà de réduire les animations';
+    b.addEventListener('click', () => {
       const actif = !(PX.store.get('calme') === '1' || PX.reduit);
       if (PX.reduit && !actif) { PX.toast('Les animations restent réduites selon le réglage de votre appareil.'); return; }
       PX.store.set('calme', actif ? '1' : '0');
       PX.sess.set('defile', String(window.scrollY));
       window.location.reload();
     });
-  }
-  const btnSon = document.getElementById('btn-son');
-  if (btnSon) {
-    btnSon.setAttribute('aria-pressed', PX.son ? 'true' : 'false');
-    btnSon.addEventListener('click', () => {
+  });
+  const btnsNotes = document.querySelectorAll('[data-action="notes"]');
+  const appliquerNotes = (sans) => { html.classList.toggle('sans-notes', sans); btnsNotes.forEach((b) => { b.setAttribute('aria-pressed', sans ? 'true' : 'false'); b.textContent = sans ? 'Afficher les notes de maquette' : 'Masquer les notes de maquette'; }); };
+  appliquerNotes(PX.store.get('sans-notes') === '1');
+  btnsNotes.forEach((b) => b.addEventListener('click', () => { const sans = !html.classList.contains('sans-notes'); PX.store.set('sans-notes', sans ? '1' : '0'); appliquerNotes(sans); }));
+  const btnsSon = document.querySelectorAll('[data-action="son"]');
+  btnsSon.forEach((b) => {
+    b.setAttribute('aria-pressed', PX.son ? 'true' : 'false');
+    b.addEventListener('click', () => {
       PX.son = !PX.son; PX.store.set('son', PX.son ? '1' : '0');
-      btnSon.setAttribute('aria-pressed', PX.son ? 'true' : 'false');
+      btnsSon.forEach((x) => x.setAttribute('aria-pressed', PX.son ? 'true' : 'false'));
       if (PX.son) PX.declic();
       PX.toast(PX.son ? 'Son du déclencheur activé' : 'Son coupé');
     });
-  }
+  });
   const defile = PX.sess.get('defile');
   if (defile) { PX.sess.del('defile'); window.addEventListener('load', () => window.scrollTo(0, +defile)); }
+
+  /* ---------- Fenêtres modales : focus piégé et fond inerte ---------- */
+  const fonds = () => Array.from(document.querySelectorAll('body > header, body > main, body > footer, .barre-cta'));
+  PX.pieger = (boite) => {
+    const avant = document.activeElement;
+    fonds().forEach((el) => { if (!el.contains(boite)) el.inert = true; });
+    const clavier = (e) => {
+      if (e.key !== 'Tab') return;
+      const f = Array.from(boite.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter((x) => x.offsetParent !== null || x === document.activeElement);
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    };
+    boite.addEventListener('keydown', clavier);
+    return () => { boite.removeEventListener('keydown', clavier); fonds().forEach((el) => { el.inert = false; }); if (avant && avant.focus) avant.focus(); };
+  };
 
   /* ---------- Menu mobile ---------- */
   const menu = document.querySelector('.menu');
   const menuBtn = document.querySelector('.menu-btn');
-  function fermerMenu() { if (menu && menu.classList.contains('ouvert')) { menu.classList.remove('ouvert'); menuBtn && menuBtn.setAttribute('aria-expanded', 'false'); if (PX.lenis) PX.lenis.start(); } }
+  let libererMenu = null;
+  function fermerMenu() {
+    if (!menu || !menu.classList.contains('ouvert')) return;
+    menu.classList.remove('ouvert'); menuBtn && menuBtn.setAttribute('aria-expanded', 'false');
+    if (PX.lenis) PX.lenis.start();
+    if (libererMenu) { libererMenu(); libererMenu = null; }
+    setTimeout(() => { if (!menu.classList.contains('ouvert')) menu.hidden = true; }, PX.calme ? 0 : 700);
+  }
   if (menu && menuBtn) {
-    menuBtn.addEventListener('click', () => { menu.classList.add('ouvert'); menuBtn.setAttribute('aria-expanded', 'true'); if (PX.lenis) PX.lenis.stop(); const f = menu.querySelector('a'); f && f.focus(); });
-    menu.querySelector('.menu-fermer').addEventListener('click', () => { fermerMenu(); menuBtn.focus(); });
+    menuBtn.addEventListener('click', () => {
+      menu.hidden = false; void menu.offsetWidth;
+      menu.classList.add('ouvert'); menuBtn.setAttribute('aria-expanded', 'true');
+      if (PX.lenis) PX.lenis.stop();
+      libererMenu = PX.pieger(menu);
+      const f = menu.querySelector('a'); f && f.focus();
+    });
+    menu.querySelector('.menu-fermer').addEventListener('click', fermerMenu);
+    menu.addEventListener('click', (e) => { if (e.target.closest('a[href]')) fermerMenu(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fermerMenu(); });
   }
 
@@ -263,11 +305,11 @@
     if (!href || href.startsWith('#') || /^(mailto|tel|sms|javascript):/i.test(href)) return;
     let url; try { url = new URL(href, window.location.href); } catch (err) { return; }
     if (url.origin !== window.location.origin) return;
-    if (url.pathname === window.location.pathname && url.hash) return; /* même page : laissé au script de page */
+    if (cheminPage(url) === cheminPage(window.location) && url.hash) return; /* même page : géré plus haut */
     if (PX.calme || !G) return;
     e.preventDefault();
     PX.sess.set('iris', '1');
-    PX.iris('fermer', 0.65).then(() => { window.location.href = url.href; });
+    PX.iris('fermer', 0.4).then(() => { window.location.href = url.href; });
   });
   window.addEventListener('pageshow', (e) => { if (e.persisted) iris.classList.remove('actif'); });
 
@@ -275,30 +317,33 @@
   let resoudre; PX.pret = new Promise((ok) => { resoudre = ok; });
   const chargement = document.querySelector('.chargement');
   function demarrer() {
-    if (chargement && !PX.sess.get('vu') && G && !PX.calme) {
+    if (chargement && !PX.sess.get('vu') && !window.location.hash && G && !PX.calme) {
       PX.sess.set('vu', '1');
       const tl = G.timeline();
       const barre = chargement.querySelector('.chargement__barre i');
       chargement.querySelectorAll('[data-expo]').forEach((el) => {
         const vals = el.dataset.expo.split('|'); const o = { i: 0 };
-        tl.to(o, { i: vals.length - 1, duration: 1.5, ease: 'power2.inOut', onUpdate: () => { el.textContent = vals[Math.round(o.i)]; } }, 0);
+        tl.to(o, { i: vals.length - 1, duration: 0.9, ease: 'power2.inOut', onUpdate: () => { el.textContent = vals[Math.round(o.i)]; } }, 0);
       });
-      tl.fromTo(chargement.querySelector('.chargement__marque'), { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.8 }, 0);
-      tl.to(barre, { scaleX: 1, duration: 1.6, ease: 'power2.inOut' }, 0);
-      tl.add(() => { PX.declic(); }, 1.62);
+      tl.fromTo(chargement.querySelector('.chargement__marque'), { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6 }, 0);
+      tl.to(barre, { scaleX: 1, duration: 0.95, ease: 'power2.inOut' }, 0);
+      tl.add(() => { PX.declic(); }, 0.95);
       tl.add(() => {
         iris.classList.add('actif'); dessinerIris(0, -0.5); chargement.remove();
-        PX.iris('ouvrir', 0.85); setTimeout(resoudre, 250);
-      }, 1.7);
+        resoudre(); PX.iris('ouvrir', 0.75);
+      }, 1.0);
     } else {
       if (chargement) chargement.remove();
-      if (PX.sess.get('iris') === '1' && G && !PX.calme) { PX.sess.del('iris'); PX.iris('ouvrir', 0.8); setTimeout(resoudre, 200); }
+      PX.sess.set('vu', '1');
+      if (PX.sess.get('iris') === '1' && G && !PX.calme) { PX.sess.del('iris'); resoudre(); PX.iris('ouvrir', 0.5); }
       else resoudre();
     }
   }
 
   /* ---------- Révélations : chaque élément part d'un état visible ou masqué derrière une ligne ---------- */
-  PX.reveler = (racine) => {
+  const polices = (document.fonts && document.fonts.ready) ? Promise.race([document.fonts.ready, new Promise((ok) => setTimeout(ok, 1200))]) : Promise.resolve();
+  PX.reveler = (racine) => { polices.then(() => revelerMaintenant(racine)); };
+  const revelerMaintenant = (racine) => {
     racine = racine || document;
     if (!G || PX.calme) return;
     const ST = window.ScrollTrigger;
@@ -307,22 +352,22 @@
       let lignes;
       if (window.SplitText) { const s = window.SplitText.create(el, { type: 'lines', mask: 'lines', linesClass: 'ligne-split' }); lignes = s.lines; }
       if (!lignes || !lignes.length) return;
-      G.from(lignes, { yPercent: 108, duration: 1.1, stagger: 0.09, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      G.from(lignes, { yPercent: 108, duration: 1.1, stagger: 0.09, scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' } });
     });
     racine.querySelectorAll('[data-revele="photo"]').forEach((el) => {
       if (el.dataset.fait) return; el.dataset.fait = '1';
       const img = el.querySelector('img');
-      const tl = G.timeline({ scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+      const tl = G.timeline({ scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' } });
       tl.fromTo(el, { clipPath: 'inset(12% 9% 12% 9%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4 });
       if (img) tl.fromTo(img, { scale: 1.22 }, { scale: 1, duration: 1.8 }, 0);
     });
     racine.querySelectorAll('[data-revele="monte"]').forEach((el) => {
       if (el.dataset.fait) return; el.dataset.fait = '1';
-      G.from(el.children.length && el.dataset.enfants !== undefined ? el.children : el, { y: 36, autoAlpha: 0, duration: 1, stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      G.from(el.children.length && el.dataset.enfants !== undefined ? el.children : el, { y: 36, autoAlpha: 0, duration: 1, stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' } });
     });
     racine.querySelectorAll('[data-focus]').forEach((el) => {
       if (el.dataset.fait) return; el.dataset.fait = '1';
-      G.fromTo(el, { filter: 'blur(14px)', scale: 1.04, letterSpacing: '0.04em' }, { filter: 'blur(0px)', scale: 1, letterSpacing: '', duration: 1.4, ease: 'power2.out', clearProps: 'filter,letterSpacing', scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      G.fromTo(el, { filter: 'blur(6px)', scale: 1.02, letterSpacing: '0.02em' }, { filter: 'blur(0px)', scale: 1, letterSpacing: '', duration: 1.4, ease: 'power2.out', clearProps: 'filter,letterSpacing', scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' } });
     });
     racine.querySelectorAll('[data-parallaxe]').forEach((el) => {
       if (el.dataset.fait) return; el.dataset.fait = '1';
@@ -344,7 +389,7 @@
     const b = e.target.closest('[data-copier]'); if (!b) return;
     const texte = b.dataset.copier;
     const repli = () => { const cible = b.parentElement.querySelector('span'); if (cible) { const r = document.createRange(); r.selectNodeContents(cible); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } PX.toast('Texte sélectionné, copiez-le avec votre clavier'); };
-    try { navigator.clipboard.writeText(texte).then(() => PX.toast('Copié : ' + texte), repli); } catch (err) { repli(); }
+    try { navigator.clipboard.writeText(texte).then(() => PX.toast('Copié : ' + texte), repli); } catch (err) { repli(); }
   });
 
   /* ---------- Panier en tiroir ---------- */
@@ -357,7 +402,7 @@
   const voile = document.createElement('div'); voile.className = 'panier-voile';
   document.body.append(voile, tiroir);
   const listeEl = tiroir.querySelector('.panier__liste'), piedEl = tiroir.querySelector('.panier__pied');
-  let etapePanier = 'liste', retrait = 'studio';
+  let etapePanier = 'liste', retrait = 'studio', libererPanier = null;
   const produitDe = (id) => (D.produits || []).find((p) => p.id === id);
   const sauver = () => PX.store.set(panierCle, JSON.stringify(lignes));
   const nb = () => lignes.reduce((s, l) => s + l.qte, 0);
@@ -370,7 +415,7 @@
     majBoutons();
     if (!lignes.length && etapePanier !== 'fin') etapePanier = 'liste';
     if (etapePanier === 'fin') {
-      listeEl.innerHTML = '<div class="panier__vide"><b style="font-family:var(--f-titre);font-size:1.8rem;font-weight:340">Commande simulée</b><p>Aucun paiement n’a été effectué : c’est une maquette. Sur le vrai site, Liz vous demande ensuite par e-mail les détails de personnalisation (photos, écritures, gravure).</p></div>';
+      listeEl.innerHTML = '<div class="panier__vide"><b style="font-family:var(--f-titre);font-size:1.8rem;font-weight:340">Commande simulée</b><p>Aucun paiement n’a été effectué : c’est une maquette. Après une vraie commande, je vous demande par e-mail vos photos et les détails de personnalisation (écritures, gravure).</p></div>';
       piedEl.innerHTML = '<button class="btn" type="button" data-fermer-panier>Continuer la visite</button>';
       return;
     }
@@ -383,9 +428,9 @@
     const sup = supplement();
     const total = sousTotal() + (retrait === 'livraison' ? sup : 0);
     if (etapePanier === 'liste') {
-      piedEl.innerHTML = '<div class="ch"><label for="panier-retrait">Réception</label><select id="panier-retrait"><option value="studio"' + (retrait === 'studio' ? ' selected' : '') + '>Retrait au home studio à Ugny, contrôle qualité avant remise</option><option value="livraison"' + (retrait === 'livraison' ? ' selected' : '') + '>Livraison à domicile par Liz (+ ' + PX.euros(sup) + ')</option></select></div><div class="panier__total"><span>Total</span><b>' + PX.euros(total) + '</b></div><button class="btn" type="button" data-commander>Commander</button><p class="note-maquette">Produits personnalisés : aucun retour, échange ni remboursement après validation de la commande.</p>';
+      piedEl.innerHTML = '<div class="ch"><label for="panier-retrait">Réception</label><select id="panier-retrait"><option value="studio"' + (retrait === 'studio' ? ' selected' : '') + '>Retrait au home studio à Ugny, contrôle qualité avant remise</option><option value="livraison"' + (retrait === 'livraison' ? ' selected' : '') + '>Livraison à domicile (+ ' + PX.euros(sup) + ')</option></select></div><div class="panier__total"><span>Total</span><b>' + PX.euros(total) + '</b></div><button class="btn" type="button" data-commander>Commander</button><p class="note-maquette">Produits personnalisés : aucun retour, échange ni remboursement après validation de la commande.</p>';
     } else {
-      piedEl.innerHTML = '<div class="panier__total"><span>À payer</span><b>' + PX.euros(total) + '</b></div><div><span class="etiquette">Moyens de paiement</span><div class="paiements" style="margin-top:.5rem"><span class="a-completer">moyens de paiement de la boutique actuelle à compléter</span></div></div><p class="note-maquette">Paiement simulé : rien n’est débité dans cette maquette.</p><div class="form-nav" style="margin-top:0"><button class="btn btn--ligne btn--petit" type="button" data-retour-panier>Retour</button><button class="btn" type="button" data-payer data-croq>Payer (simulation)</button></div>';
+      piedEl.innerHTML = '<div class="panier__total"><span>À payer</span><b>' + PX.euros(total) + '</b></div><div><span class="etiquette">Moyens de paiement</span><div class="paiements" style="margin-top:.5rem"><span class="a-completer">moyens de paiement de la boutique actuelle à compléter</span></div></div><p class="note-maquette">Paiement simulé : rien n’est débité dans cette maquette.</p><div class="form-nav" style="margin-top:0"><button class="btn btn--ligne btn--petit" type="button" data-retour-panier>Retour</button><button class="btn" type="button" data-payer data-croq>Payer (simulation)</button></div>';
     }
   }
   PX.panier = {
@@ -395,10 +440,10 @@
       sauver(); etapePanier = 'liste';
       if (depuis && G && !PX.calme && article.img) PX.vol(depuis, article.img).then(rendrePanier);
       else rendrePanier();
-      PX.toast(article.nom + ' ajouté au panier');
+      PX.toast('Ajouté au panier\u202f: ' + article.nom);
     },
-    ouvrir() { rendrePanier(); tiroir.classList.add('ouvert'); voile.classList.add('ouvert'); tiroir.setAttribute('aria-hidden', 'false'); tiroir.inert = false; if (PX.lenis) PX.lenis.stop(); setTimeout(() => tiroir.querySelector('[data-fermer-panier]').focus(), 50); },
-    fermer() { tiroir.classList.remove('ouvert'); voile.classList.remove('ouvert'); tiroir.setAttribute('aria-hidden', 'true'); tiroir.inert = true; if (PX.lenis) PX.lenis.start(); if (etapePanier === 'fin') { etapePanier = 'liste'; rendrePanier(); } }
+    ouvrir() { rendrePanier(); tiroir.classList.add('ouvert'); voile.classList.add('ouvert'); tiroir.setAttribute('aria-hidden', 'false'); tiroir.inert = false; if (PX.lenis) PX.lenis.stop(); libererPanier = PX.pieger(tiroir); setTimeout(() => tiroir.querySelector('[data-fermer-panier]').focus(), 50); },
+    fermer() { if (!tiroir.classList.contains('ouvert')) return; tiroir.classList.remove('ouvert'); voile.classList.remove('ouvert'); tiroir.setAttribute('aria-hidden', 'true'); tiroir.inert = true; if (PX.lenis) PX.lenis.start(); if (libererPanier) { libererPanier(); libererPanier = null; } if (etapePanier === 'fin') { etapePanier = 'liste'; rendrePanier(); } }
   };
   document.addEventListener('click', (e) => {
     if (e.target.closest('.panier-btn')) { PX.panier.ouvrir(); return; }
@@ -434,7 +479,21 @@
   const ajusterSignature = () => { if (!signature) return; try { const b = signature.getBBox(); if (b.width) signature.ownerSVGElement.setAttribute('viewBox', [b.x - 2, b.y - 2, b.width + 4, b.height + 4].map((n) => n.toFixed(1)).join(' ')); } catch (e) { /* rien */ } };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusterSignature); else ajusterSignature();
   if (signature && G && !PX.calme) {
-    G.fromTo(signature, { strokeDasharray: 1600, strokeDashoffset: 1600 }, { strokeDashoffset: 0, duration: 3.2, ease: 'power2.inOut', scrollTrigger: { trigger: signature, start: 'top 95%', once: true } });
+    G.fromTo(signature, { strokeDasharray: 1600, strokeDashoffset: 1600 }, { strokeDashoffset: 0, duration: 3.2, ease: 'power2.inOut', scrollTrigger: { trigger: signature, start: 'top 95%', toggleActions: 'play none none none' } });
+  }
+
+  /* ---------- Barre de réservation (téléphone) ---------- */
+  const barre = document.getElementById('barre-cta');
+  if (barre) {
+    const cacheurs = new Set();
+    let apresOuverture = false;
+    const maj = () => { const v = apresOuverture && cacheurs.size === 0; barre.classList.toggle('visible', v); document.body.classList.toggle('barre-visible', v); };
+    const ref = document.querySelector('[data-sous-entete]');
+    const seuil = () => (ref ? ref.offsetHeight * 0.75 : window.innerHeight * 0.6);
+    window.addEventListener('scroll', () => { const v = window.scrollY > seuil(); if (v !== apresOuverture) { apresOuverture = v; maj(); } }, { passive: true });
+    const io = new IntersectionObserver((ents) => { ents.forEach((en) => { if (en.isIntersecting) cacheurs.add(en.target); else cacheurs.delete(en.target); }); maj(); }, { threshold: 0.12 });
+    document.querySelectorAll('#reserver, .pied').forEach((el) => io.observe(el));
+    PX.barre = { observer: (el) => io.observe(el) };
   }
 
   /* ---------- GL : attente du module ---------- */

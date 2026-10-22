@@ -851,17 +851,6 @@
   "color": "#9a7845",
   "alt": ""
  },
- "grok-feuillage-contre-jour": {
-  "dir": "grok",
-  "w": 1168,
-  "h": 784,
-  "sizes": [
-   480,
-   1168
-  ],
-  "color": "#a6874a",
-  "alt": ""
- },
  "grok-mur-chambre-bebe": {
   "dir": "grok",
   "w": 1168,
@@ -961,17 +950,6 @@
   "color": "#462f1b",
   "alt": ""
  },
- "grok-papier-baryte": {
-  "dir": "grok",
-  "w": 784,
-  "h": 1168,
-  "sizes": [
-   480,
-   784
-  ],
-  "color": "#f2eee6",
-  "alt": ""
- },
  "grok-restauration-tirages-anciens": {
   "dir": "grok",
   "w": 784,
@@ -981,17 +959,6 @@
    784
   ],
   "color": "#9d7b55",
-  "alt": ""
- },
- "grok-naissance-tricot": {
-  "dir": "grok",
-  "w": 784,
-  "h": 1168,
-  "sizes": [
-   480,
-   784
-  ],
-  "color": "#9b7b59",
   "alt": ""
  }
 }

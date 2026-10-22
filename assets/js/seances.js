@@ -7,8 +7,10 @@
   const anime = !!G && !PX.calme;
   const U = D.univers;
   const parId = (id) => U.find((u) => u.id === id);
-  const idDepuisHash = () => { const h = (window.location.hash || '').slice(1); return parId(h) ? h : 'mariage'; };
+  /* sans univers dans l'adresse (#mariage…), la page montre le sommaire des 11 univers */
+  const idDepuisHash = () => { const h = (window.location.hash || '').slice(1); return parId(h) ? h : null; };
   let u = parId(idDepuisHash());
+  const desTout = Math.min.apply(null, U.filter((x) => x.formules.length && !x.parPhoto).map((x) => Math.min.apply(null, x.formules.map((f) => f.prix))));
   let etat = {};
   const villes = (() => {
     const O = D.origine, rad = Math.PI / 180;
@@ -18,10 +20,38 @@
 
   /* ---------- Puces des univers ---------- */
   const puces = $('#u-puces');
-  puces.innerHTML = U.map((x) => { const k = x.photos[0] || x.ambiance; return '<a href="#' + x.id + '" data-hash data-id="' + x.id + '">' + PX.img(k, { w: 160, sizes: '30px', alt: '' }) + x.nom + '</a>'; }).join('');
+  puces.innerHTML = '<a href="#tout" data-hash data-id="tout"><span class="pastille" aria-hidden="true"></span>Tous les univers</a>' + U.map((x) => { const k = x.photos[0] || x.ambiance; return '<a href="#' + x.id + '" data-hash data-id="' + x.id + '">' + PX.img(k, { w: 160, sizes: '30px', alt: '' }) + x.nom + '</a>'; }).join('');
+
+  /* ---------- Sommaire des univers ---------- */
+  const prixDe = (x) => (x.devis ? 'Sur devis' : x.parPhoto ? PX.euros(x.parPhoto) + ' / photo' : 'dès ' + PX.euros(Math.min.apply(null, x.formules.map((f) => f.prix))));
+  const grilleS = $('#sommaire-grille');
+  if (grilleS) grilleS.innerHTML = U.map((x) => { const k = x.photos[0] || x.ambiance; const amb = !x.photos.length; return '<a class="sommaire__carte" href="#' + x.id + '" data-hash data-curseur="voir" data-curseur-texte="Tarifs"><span class="cadre">' + PX.img(k, { sizes: '(min-width: 900px) 25vw, 50vw', alt: '' }) + (amb ? '<span class="ambiance-tag">Image d’ambiance</span>' : '') + '</span><span class="sommaire__ligne"><b>' + x.nom + '</b><span>' + prixDe(x) + '</span></span><small>' + x.accroche + '</small></a>'; }).join('');
+  function herosSommaire() {
+    const k = 'grossesse-couple-couleur';
+    $('#u-groupe').textContent = 'Séances & tarifs';
+    $('#u-titre').innerHTML = 'Les <em>séances</em>';
+    $('#u-acc').textContent = 'Choisissez votre univers';
+    $('#u-texte').textContent = 'Portraits, anniversaire, grossesse, naissance, boudoir, mariage, baptême, animaux, restauration et projets sur mesure : chaque séance est pensée pour capturer vos émotions et vos instants précieux.';
+    $('#u-des-lbl').textContent = 'À partir de';
+    PX.compter($('#u-des'), desTout, { fmt: (n) => PX.euros(Math.round(n)) });
+    const cadre = $('#u-photo');
+    cadre.style.setProperty('--ar', PX.ar(k).toFixed(3));
+    cadre.innerHTML = PX.img(k, { eager: true, sizes: '(min-width: 900px) 45vw, 100vw' });
+    $('#u-exif').innerHTML = PX.exif(k);
+    document.title = 'Séances et tarifs · Pix’n Croq';
+    const bp = document.getElementById('barre-principal');
+    if (bp) bp.firstChild.textContent = 'Réserver une séance ';
+    const b2 = document.querySelector('#barre-cta .btn--ligne'); if (b2) { b2.textContent = 'Univers'; b2.setAttribute('href', '#sommaire'); }
+    $$('a', puces).forEach((a) => a.setAttribute('aria-current', a.dataset.id === 'tout' ? 'true' : 'false'));
+    const cta = $('.u-hero .ouverture__actions');
+    if (cta) cta.innerHTML = '<a class="btn btn--clair" href="#sommaire" data-magnet>Voir les 11 univers <span class="fleche" aria-hidden="true">→</span></a><a class="btn btn--ligne" href="index.html#reserver">Réserver</a>';
+    PX.quandGL((gl) => { if (gl) gl.developper(cadre, { duree: 1.4 }); });
+  }
 
   /* ---------- Héros ---------- */
   function heros() {
+    const cta = $('.u-hero .ouverture__actions');
+    if (cta) cta.innerHTML = '<a class="btn btn--clair" href="#composer" data-magnet>Composer ma séance <span class="fleche" aria-hidden="true">→</span></a><a class="btn btn--ligne" href="#formules">Voir les formules</a>';
     const k = u.photos[0] || u.ambiance;
     const ambiance = !u.photos.length;
     $('#u-groupe').textContent = u.groupe;
@@ -36,13 +66,16 @@
     else { lbl.textContent = 'À partir de'; PX.compter(des, Math.min.apply(null, u.formules.map((f) => f.prix)), { fmt: (n) => PX.euros(Math.round(n)) }); }
     const cadre = $('#u-photo');
     cadre.style.setProperty('--ar', PX.ar(k).toFixed(3));
-    cadre.innerHTML = PX.img(k, { eager: true, sizes: '(min-width: 900px) 45vw, 100vw', alt: ambiance ? '' : undefined }) + (ambiance ? '<span class="ambiance-tag">Ambiance générée · photos de Liz à venir</span>' : '');
+    cadre.innerHTML = PX.img(k, { eager: true, sizes: '(min-width: 900px) 45vw, 100vw', alt: ambiance ? '' : undefined }) + (ambiance ? '<span class="ambiance-tag">Image d’ambiance · photos à venir</span>' : '');
     $('#u-exif').innerHTML = ambiance ? '' : PX.exif(k);
     document.title = u.nom + ' · Pix’n Croq';
+    const bp = document.getElementById('barre-principal');
+    if (bp) bp.firstChild.textContent = (u.devis ? 'Demander un devis ' : (u.nom.length > 14 ? 'Réserver cette séance ' : 'Réserver · ' + u.nom + ' '));
+    const b2 = document.querySelector('#barre-cta .btn--ligne'); if (b2) { b2.textContent = 'Formules'; b2.setAttribute('href', '#formules'); }
     $$('a', puces).forEach((a) => a.setAttribute('aria-current', a.dataset.id === u.id ? 'true' : 'false'));
     const actif = $('a[aria-current="true"]', puces);
     if (actif) puces.scrollTo({ left: actif.offsetLeft - 40, behavior: PX.calme ? 'auto' : 'smooth' });
-    PX.quandGL((gl) => { if (gl) gl.developper(cadre, { duree: 2.1 }); });
+    PX.quandGL((gl) => { if (gl) gl.developper(cadre, { duree: 1.4 }); });
   }
 
   /* ---------- Formules ---------- */
@@ -55,7 +88,7 @@
       const src = sources.length ? PX.url(sources[i % sources.length], 480) : '';
       h += '<i data-a="' + a.toFixed(2) + '" style="width:' + taille[0] + 'px;height:' + taille[1] + 'px;margin-left:-' + taille[0] / 2 + 'px;transform:rotate(' + a.toFixed(2) + 'deg);' + (src ? 'background-image:url(' + src + ')' : '') + '"></i>';
     }
-    return h + '<span class="eventail__nb">' + n + ' tirages 10x15</span></div>';
+    return h + '<span class="eventail__nb">' + n + ' tirages 10 × 15</span></div>';
   }
   function formules() {
     const liste = $('#f-liste'), intro = $('#f-intro'), note = $('#f-note');
@@ -72,7 +105,7 @@
       liste.innerHTML = '<article class="formule vedette"><div class="formule__tete"><span class="formule__nom">Restauration</span><span class="formule__badge">Par photo</span></div><div class="formule__prix"><span data-prix="' + u.parPhoto + '">' + u.parPhoto + '</span>&#8239;€<small>par photo</small></div><ul>' + u.inclus.map((x) => '<li>' + x + '</li>').join('') + '</ul><p class="formule__lieu">' + u.note + '</p><div><a class="btn btn--clair" href="#composer" data-choisir="0">Estimer ma commande</a></div></article>';
       return;
     }
-    intro.textContent = (u.inclus && u.inclus.length ? 'Inclus dans chaque formule : ' + u.inclus.join(' · ') + '.' : '');
+    intro.textContent = (u.inclus && u.inclus.length ? 'Inclus dans chaque formule : ' + u.inclus.join(' · ') + '.' : '');
     liste.dataset.n = String(u.formules.length);
     const vedette = u.formules.length > 1 ? 1 : 0;
     liste.innerHTML = u.formules.map((f, i) => {
@@ -80,16 +113,16 @@
       if (u.etapes) {
         corps = '<div class="couverture" style="--n:' + u.etapes.length + '" aria-label="Moments couverts">' + u.etapes.map((e, j) => '<span class="' + (f.couvre.indexOf(j) > -1 ? 'on' : '') + '">' + e + '</span>').join('') + '</div><ul>' + f.liste.map((x) => '<li>' + x + '</li>').join('') + '</ul>';
       } else {
-        const lignes = [f.lieu, f.photos + ' portraits sublimés' + (f.note ? ' ' + f.note : '')].concat(f.plus || []).concat((u.inclus || []).filter((x) => /10x15/.test(x)));
+        const lignes = [f.lieu, f.photos + ' portraits sublimés' + (f.note ? ' ' + f.note : '')].concat(f.plus || []).concat((u.inclus || []).filter((x) => /10 × 15/.test(x)));
         corps = eventail(f.photos, u.photos) + '<ul>' + lignes.map((x) => '<li>' + x + '</li>').join('') + '</ul>';
       }
       return '<article class="formule' + (i === vedette ? ' vedette' : '') + '"><div class="formule__tete"><span class="formule__nom">' + f.nom + '</span>' + (i === vedette ? '<span class="formule__badge">La plus choisie ?</span>' : '') + '</div><div class="formule__prix"><span data-prix="' + f.prix + '">' + f.prix + '</span>&#8239;€</div>' + corps + '<div><a class="btn ' + (i === vedette ? 'btn--clair' : 'btn--ligne') + ' btn--petit" href="#composer" data-choisir="' + i + '">Choisir ' + f.nom + '</a></div></article>';
     }).join('');
-    const badge = $('.formule__badge', liste); if (badge) badge.outerHTML = '<span class="a-completer">formule à mettre en avant</span>';
+    const badge = $('.formule__badge', liste); if (badge) badge.remove();
     if (anime) {
       $$('.formule', liste).forEach((c, i) => {
         const prix = $('[data-prix]', c);
-        const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top 85%', once: true } });
+        const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top 85%', toggleActions: 'play none none none' } });
         tl.from(c, { y: 50, autoAlpha: 0, duration: 0.9, delay: i * 0.1 });
         tl.add(() => PX.compter(prix, +prix.dataset.prix, { duree: 1.1 }), 0.1);
         const tirs = $$('.eventail i', c);
@@ -105,7 +138,7 @@
     const zone = $('#c-zone');
     etat = { formule: u.formules.length > 1 ? 1 : 0, options: {}, ville: villes.findIndex((v) => v.nom === 'Longwy'), nbPhotos: 1 };
     if (u.devis) {
-      zone.innerHTML = '<div class="compo__options"><p class="u-hero__texte" style="color:var(--fumee);margin:0">Pour un projet sur mesure, décrivez votre idée : Liz vous propose un devis personnalisé selon vos envies, vos besoins et votre projet.</p></div><div class="recap"><span class="etiquette" style="color:var(--fumee-nuit)">Tarif</span><div class="recap__total">Sur devis</div><a class="btn btn--clair" href="index.html#reserver" data-devis>Demander un devis</a></div>';
+      zone.innerHTML = '<div class="compo__options"><p class="u-hero__texte" style="color:var(--fumee);margin:0">Pour un projet sur mesure, décrivez votre idée : je vous propose un devis personnalisé selon vos envies, vos besoins et votre projet.</p></div><div class="recap"><span class="etiquette" style="color:var(--fumee-nuit)">Tarif</span><div class="recap__total">Sur devis</div><a class="btn btn--clair" href="index.html#reserver" data-devis>Demander un devis</a></div>';
       return;
     }
     let h = '<div class="compo__options">';
@@ -114,12 +147,12 @@
     } else {
       h += '<div class="ch"><span class="lbl" id="c-f-lbl">Formule</span><div class="choix" role="radiogroup" aria-labelledby="c-f-lbl">' + u.formules.map((f, i) => '<label><input type="radio" name="c-formule" value="' + i + '"' + (i === etat.formule ? ' checked' : '') + '><b>' + f.nom + '</b><small>' + PX.euros(f.prix) + (f.photos ? ' · ' + f.photos + ' photos' : '') + '</small></label>').join('') + '</div></div>';
       if (u.options.length) {
-        h += '<div><span class="etiquette">Options du site</span>';
+        h += '<div><span class="etiquette">Options</span>';
         u.options.forEach((o) => {
           if (o.choix) {
             h += '<div class="compo__ligne"><label for="c-o-' + o.id + '">' + o.nom + '</label><select class="champ" style="max-width:240px" id="c-o-' + o.id + '" data-option="' + o.id + '">' + o.choix.map((c, i) => '<option value="' + i + '">' + c.nom + (c.prix ? ' (+' + PX.euros(c.prix) + ')' : '') + '</option>').join('') + '</select></div>';
           } else if (o.qte) {
-            h += '<div class="compo__ligne"><span class="nom">' + o.nom + ' <span class="px">+' + PX.euros(o.prix) + '</span></span><div class="pas"><button type="button" data-pas="' + o.id + '" data-d="-1" aria-label="Retirer">−</button><output id="c-q-' + o.id + '">0</output><button type="button" data-pas="' + o.id + '" data-d="1" aria-label="Ajouter">+</button></div></div>';
+            h += '<div class="compo__ligne"><span class="nom">' + o.nom + ' <span class="px">+' + PX.euros(o.prix) + '</span></span><div class="pas"><button type="button" data-pas="' + o.id + '" data-d="-1" aria-label="Retirer : ' + o.nom + '">−</button><output id="c-q-' + o.id + '">0</output><button type="button" data-pas="' + o.id + '" data-d="1" aria-label="Ajouter : ' + o.nom + '">+</button></div></div>';
           } else {
             h += '<div class="compo__ligne"><label for="c-o-' + o.id + '">' + o.nom + ' <span class="px">+' + PX.euros(o.prix) + '</span></label><span class="interrupteur"><input type="checkbox" id="c-o-' + o.id + '" data-option="' + o.id + '"><span></span></span></div>';
           }
@@ -128,7 +161,7 @@
       }
       h += '<div class="ch"><label for="c-ville">Lieu de la séance</label><select class="champ" id="c-ville"><option value="-1">Home studio à Ugny ou dans les 15 km</option>' + villes.map((v, i) => '<option value="' + i + '"' + (i === etat.ville ? ' selected' : '') + '>' + v.nom + ' (' + Math.round(v.d) + ' km à vol d’oiseau)</option>').join('') + '</select></div>';
     }
-    h += '</div><div class="recap" aria-live="polite"><span class="etiquette" style="color:var(--fumee-nuit)">Estimation</span><div class="recap__total" id="c-total">0 €</div><ul id="c-lignes"></ul><a class="btn btn--clair" href="index.html#reserver" id="c-reserver">Réserver cette formule <span class="fleche" aria-hidden="true">→</span></a><p class="note-maquette">Tarifs du site actuel. Frais de déplacement estimés à vol d’oiseau, confirmés à la réservation.</p></div>';
+    h += '</div><div class="recap" aria-live="polite"><span class="etiquette" style="color:var(--fumee-nuit)">Estimation</span><div class="recap__total" id="c-total">0 €</div><ul id="c-lignes"></ul><a class="btn btn--clair" href="index.html#reserver" id="c-reserver">Réserver cette formule <span class="fleche" aria-hidden="true">→</span></a><p class="note-maquette">Estimation indicative. Les frais de déplacement sont calculés à vol d’oiseau depuis Ugny et confirmés à la réservation.</p></div>';
     zone.innerHTML = h;
     calculer(true);
   }
@@ -143,7 +176,7 @@
       total += f.prix; lignes.push(['Formule ' + f.nom, PX.euros(f.prix)]);
       u.options.forEach((o) => {
         const v = etat.options[o.id];
-        if (o.choix) { const c = o.choix[v || 0]; if (c && c.prix) { total += c.prix; lignes.push([o.nom + ' : ' + c.nom, '+' + PX.euros(c.prix)]); } }
+        if (o.choix) { const c = o.choix[v || 0]; if (c && c.prix) { total += c.prix; lignes.push([o.nom + ' : ' + c.nom, '+' + PX.euros(c.prix)]); } }
         else if (o.qte) { if (v) { total += o.prix * v; lignes.push([o.nom + ' × ' + v, '+' + PX.euros(o.prix * v)]); } }
         else if (v) { total += o.prix; lignes.push([o.nom, '+' + PX.euros(o.prix)]); }
       });
@@ -157,6 +190,8 @@
     if (instant) el.textContent = PX.euros(total, dec); else PX.compter(el, total, { de: totalAffiche, duree: 0.7, fmt: (n) => PX.euros(dec ? n : Math.round(n), dec) });
     totalAffiche = total;
     etat.total = total;
+    const bp = document.getElementById('barre-principal');
+    if (bp && !instant) bp.firstChild.textContent = 'Réserver · ' + PX.euros(total, dec) + ' ';
   }
   document.addEventListener('change', (e) => {
     if (e.target.name === 'c-formule') { etat.formule = +e.target.value; calculer(); }
@@ -170,11 +205,11 @@
     if (nb) { etat.nbPhotos = Math.max(1, Math.min(99, etat.nbPhotos + +nb.dataset.nb)); $('#c-nb').textContent = etat.nbPhotos; calculer(); return; }
     const ch = e.target.closest('[data-choisir]');
     if (ch && u.formules.length > 1) { etat.formule = +ch.dataset.choisir; const r = $('input[name="c-formule"][value="' + etat.formule + '"]'); if (r) r.checked = true; calculer(); }
-    const res = e.target.closest('#c-reserver, [data-devis]');
-    if (res) {
+    const res = e.target.closest('#c-reserver, [data-devis], #barre-principal');
+    if (res && u) {
       const f = u.formules[etat.formule];
       const opts = $$('#c-lignes li').map((li) => Array.from(li.children).map((c) => c.textContent).join(' ')).slice(1).join(' ; ');
-      PX.store.set('prefill', JSON.stringify({ univers: u.id, formule: f ? f.nom : '', message: u.devis ? '' : 'Estimation du site : ' + PX.euros(etat.total || 0, (etat.total || 0) % 1 !== 0) + (opts ? ' (' + opts + ')' : '') + '.' }));
+      PX.store.set('prefill', JSON.stringify({ univers: u.id, formule: f ? f.nom : '', message: u.devis || !etat.total ? '' : 'Estimation : ' + PX.euros(etat.total || 0, (etat.total || 0) % 1 !== 0) + (opts ? ' (' + opts + ')' : '') + '.' }));
     }
   });
 
@@ -184,11 +219,11 @@
     const g = $('#g-liste');
     photos = u.photos.slice();
     if (!photos.length) {
-      $('#g-intro').textContent = 'Les photos de cet univers seront choisies par Liz parmi ses séances.';
+      $('#g-intro').textContent = 'La galerie de cet univers est en préparation.';
       const k = u.ambiance;
-      let droite = '<div style="display:grid;gap:1rem"><p style="font-family:var(--f-titre);font-size:var(--t-xl);line-height:1.2">En attendant, une image d’ambiance générée tient la place, sans personne et sans prétendre montrer une séance.</p><p><span class="a-completer">photos de séances à fournir</span></p></div>';
+      let droite = '<div style="display:grid;gap:1rem"><p style="font-family:var(--f-titre);font-size:var(--t-xl);line-height:1.2">Les photos de mes séances arrivent bientôt ici. En attendant, écrivez-moi : je vous envoie des exemples.</p><div><a class="btn btn--ligne btn--petit" href="index.html#reserver" data-devis>Demander des exemples</a></div><p><span class="a-completer">photos de séances à fournir</span></p></div>';
       if (u.id === 'restauration') {
-        droite = '<div style="display:grid;gap:1rem"><div class="av-ap" id="av-ap" style="--pos:50%"><div class="av-ap__cote av-ap__avant"><span>Avant : photo d’origine de Liz</span></div><div class="av-ap__cote av-ap__apres"><span>Après : la même photo restaurée</span></div><div class="av-ap__poignee" aria-hidden="true"></div><input type="range" min="0" max="100" value="50" aria-label="Comparer avant et après"></div><p class="note-maquette">Comparateur prêt à recevoir un vrai exemple de restauration réalisé par Liz. <span class="a-completer">exemple avant / après à fournir</span></p></div>';
+        droite = '<div style="display:grid;gap:1rem"><div class="av-ap" id="av-ap" style="--pos:50%"><div class="av-ap__cote av-ap__avant"><span>Avant</span></div><div class="av-ap__cote av-ap__apres"><span>Après</span></div><div class="av-ap__poignee" aria-hidden="true"></div><input type="range" min="0" max="100" value="50" aria-label="Comparer avant et après"></div><p class="note-maquette">Faites glisser pour comparer votre photo d’origine et la même photo restaurée. <span class="a-completer">exemple avant / après à fournir</span></p></div>';
       }
       g.className = 'galerie--vide';
       g.innerHTML = '<figure style="margin:0;position:relative" data-revele="photo">' + PX.img(k, { sizes: '(min-width: 800px) 45vw, 100vw', alt: '' }) + '<span class="ambiance-tag">Ambiance générée</span></figure>' + droite;
@@ -196,7 +231,7 @@
       if (av) { const inp = $('input', av); inp.addEventListener('input', () => av.style.setProperty('--pos', inp.value + '%')); }
       return;
     }
-    $('#g-intro').textContent = 'Cliquez sur une photo pour l’ouvrir en grand, sans recadrage, avec la loupe.';
+    $('#g-intro').textContent = 'Touchez une photo pour l’ouvrir en grand, sans recadrage. Sur ordinateur, la loupe permet de voir les détails.';
     g.className = 'galerie';
     g.innerHTML = photos.map((k, i) => '<figure data-revele="photo"><button type="button" data-voir="' + i + '" data-curseur="voir" aria-label="Agrandir : ' + PX.echapper((window.PX_IMG[k] || {}).alt || '') + '">' + PX.img(k, { sizes: '(min-width: 1000px) 33vw, (min-width: 640px) 50vw, 100vw' }) + '</button><figcaption>' + PX.exif(k) + '</figcaption></figure>').join('');
   }
@@ -211,8 +246,9 @@
     $('#v-exif').innerHTML = PX.exif(k);
     if (anime) G.fromTo($('img', scene), { opacity: 0, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.5 });
   };
-  const ouvrirV = (i) => { dernierFocus = document.activeElement; vis.hidden = false; afficher(i); if (PX.lenis) PX.lenis.stop(); $('#v-fermer').focus(); };
-  const fermerV = () => { vis.hidden = true; if (PX.lenis) PX.lenis.start(); if (dernierFocus) dernierFocus.focus(); };
+  let libererV = null;
+  const ouvrirV = (i) => { dernierFocus = document.activeElement; vis.hidden = false; afficher(i); if (PX.lenis) PX.lenis.stop(); libererV = PX.pieger(vis); $('#v-fermer').focus(); };
+  const fermerV = () => { vis.hidden = true; if (PX.lenis) PX.lenis.start(); if (libererV) { libererV(); libererV = null; } else if (dernierFocus) dernierFocus.focus(); };
   document.addEventListener('click', (e) => { const b = e.target.closest('[data-voir]'); if (b) ouvrirV(+b.dataset.voir); });
   $('#v-fermer').addEventListener('click', fermerV);
   $('#v-prec').addEventListener('click', () => afficher(indexV - 1));
@@ -249,15 +285,19 @@
   }
 
   function rendre() {
-    heros(); formules(); composer(); galerie(); voisins();
+    document.body.classList.toggle('mode-sommaire', !u);
+    if (!u) herosSommaire();
+    else { heros(); formules(); composer(); galerie(); voisins(); }
     if (G) { ST.getAll().forEach((t) => { if (t.trigger && !document.body.contains(t.trigger)) t.kill(); }); PX.reveler(document.getElementById('contenu')); ST.refresh(); }
   }
   window.addEventListener('hashchange', () => {
     const id = idDepuisHash();
-    if (id === u.id) return;
+    if ((u ? u.id : null) === id) return;
     u = parId(id);
     const go = () => { window.scrollTo(0, 0); if (PX.lenis) PX.lenis.scrollTo(0, { immediate: true }); rendre(); };
-    if (anime) PX.iris('fermer', 0.45).then(() => { go(); PX.iris('ouvrir', 0.7); }); else go();
+    /* changement d'univers : simple fondu, rapide */
+    const c = document.getElementById('contenu');
+    if (anime) G.to(c, { opacity: 0, duration: 0.18, ease: 'power1.in', onComplete: () => { go(); G.to(c, { opacity: 1, duration: 0.35, ease: 'power1.out' }); } }); else go();
   });
 
   rendre();

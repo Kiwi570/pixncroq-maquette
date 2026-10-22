@@ -9,7 +9,7 @@
 
   /* Photo de Liz utilisée pour dessiner chaque produit */
   const photoDe = { toile: 'portrait-automne-04', alu: 'mariage-course-invites', acrylique: 'mariage-porte-chateau', prestige: 'mariage-couple-chateau', 'album-28': 'naissance-parents-nb', 'album-21x28': 'grossesse-couple-couleur', 'album-21x15': 'animaux-berger-heure-doree', 'album-19': 'bapteme-chaussons-chapelet', 'album-15': 'portrait-homme-verdure', coffret: 'coffret-bois-tirages', tirages: 'portrait-automne-02', 'tirages-enveloppe': 'mariage-alliances' };
-  const im = (k, w) => PX.img(k, { w: w || 480, sizes: w ? w + 'px' : '(min-width: 900px) 25vw, 60vw', alt: '' });
+  const im = (k, w) => PX.img(k, { w: w || 480, sizes: w ? '(max-width: 760px) 60vw, 28vw' : '(max-width: 560px) 32vw, (max-width: 900px) 40vw, 18vw', alt: '' });
 
   function rendu(p, grand) {
     const k = photoDe[p.id];
@@ -67,15 +67,16 @@
     if (produit.finitions && produit.finitions.length) h += '<div><span class="etiquette">Finition</span><div class="puces-choix" style="margin-top:.5rem" data-groupe="finition">' + produit.finitions.map((f, i) => '<button type="button" data-v="' + i + '" aria-pressed="' + (i === 0) + '">' + f + '</button>').join('') + '</div></div>';
     (produit.options || []).forEach((o, i) => { h += '<div class="compo__ligne"><label for="fo-' + i + '">' + o.nom + ' <span class="px">+' + PX.euros(o.prix) + '</span></label><span class="interrupteur"><input type="checkbox" id="fo-' + i + '" data-fo="' + i + '"><span></span></span></div>'; });
     if (produit.acompleter) h += '<p>' + produit.acompleter.map((a) => '<span class="a-completer">' + a + ' à compléter</span>').join(' ') + '</p>';
-    h += '<ul class="liste-faits"><li>Retrait au home studio, contrôle qualité avant remise</li><li>Livraison à domicile : +' + PX.euros(produit.livraison) + '</li>' + (produit.prioritaire ? '<li>Traitement prioritaire : +' + PX.euros(produit.prioritaire) + '</li>' : '') + '<li>Personnalisation envoyée par e-mail après l’achat</li><li>Produit personnalisé : ni retour, ni échange, ni remboursement</li></ul>';
+    h += '<ul class="liste-faits"><li>Retrait au home studio, contrôle qualité avant remise</li><li>Livraison à domicile : +' + PX.euros(produit.livraison) + '</li>' + (produit.prioritaire ? '<li>Traitement prioritaire : +' + PX.euros(produit.prioritaire) + '</li>' : '') + '<li>Personnalisation envoyée par e-mail après l’achat</li><li>Produit personnalisé : ni retour, ni échange, ni remboursement</li></ul>';
     h += '<div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn" type="button" id="fiche-ajouter">Ajouter au panier</button>' + (produit.cat === 'tableaux' ? '<button class="btn btn--ligne" type="button" id="fiche-mur">Essayer au mur</button>' : '') + '</div>';
     ficheCorps.innerHTML = h;
     majFiche();
-    fiche.hidden = false; if (PX.lenis) PX.lenis.stop();
+    fiche.hidden = false; if (PX.lenis) PX.lenis.stop(); libererFiche = PX.pieger(fiche);
     if (anime) { G.fromTo('.fiche__boite', { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }); G.fromTo('#fiche-vitrine .rendu', { rotationY: -30, rotationX: 10, scale: 0.9 }, { rotationY: 0, rotationX: 0, scale: 1, duration: 1.2, ease: 'elastic.out(1, 0.6)' }); }
     $('#fiche-fermer').focus();
   }
-  function fermerFiche() { fiche.hidden = true; if (PX.lenis) PX.lenis.start(); if (focusAvant) focusAvant.focus(); }
+  let libererFiche = null;
+  function fermerFiche() { if (fiche.hidden) return; fiche.hidden = true; if (PX.lenis) PX.lenis.start(); if (libererFiche) { libererFiche(); libererFiche = null; } else if (focusAvant) focusAvant.focus(); }
   ficheCorps.addEventListener('click', (e) => {
     const b = e.target.closest('[data-groupe] button');
     if (b) { const g = b.parentElement.dataset.groupe; $$('button', b.parentElement).forEach((x) => x.setAttribute('aria-pressed', String(x === b))); choix[g] = +b.dataset.v; majFiche(); return; }
@@ -105,9 +106,9 @@
 
   /* ---------- Voir au mur ---------- */
   const pieces = [
-    { id: 'salon', nom: 'Salon', img: 'grok-mur-salon-16x9', ar: 1168 / 784, wcm: 293.5, cx: 0.528, bas: 0.41, repere: 'Repère : canapé d’environ 2,10 m', mobile: { img: 'grok-mur-salon-9x16', ar: 784 / 1168, wcm: 175, cx: 0.5, bas: 0.61 } },
-    { id: 'chambre', nom: 'Chambre', img: 'grok-mur-chambre', ar: 1168 / 784, wcm: 295, cx: 0.503, bas: 0.48, repere: 'Repère : tête de lit d’environ 1,70 m' },
-    { id: 'bebe', nom: 'Chambre de bébé', img: 'grok-mur-chambre-bebe', ar: 1168 / 784, wcm: 256, cx: 0.497, bas: 0.377, repere: 'Repère : lit bébé d’environ 1,25 m' }
+    { id: 'salon', nom: 'Salon', img: 'grok-mur-salon-16x9', ar: 1168 / 784, wcm: 293.5, cx: 0.528, bas: 0.41, repere: 'Repère : canapé d’environ 2,10 m', mobile: { img: 'grok-mur-salon-9x16', ar: 784 / 1168, wcm: 175, cx: 0.5, bas: 0.61 } },
+    { id: 'chambre', nom: 'Chambre', img: 'grok-mur-chambre', ar: 1168 / 784, wcm: 295, cx: 0.503, bas: 0.48, repere: 'Repère : tête de lit d’environ 1,70 m' },
+    { id: 'bebe', nom: 'Chambre de bébé', img: 'grok-mur-chambre-bebe', ar: 1168 / 784, wcm: 256, cx: 0.497, bas: 0.377, repere: 'Repère : lit bébé d’environ 1,25 m' }
   ];
   const photosMur = ['mariage-couple-prairie', 'portrait-automne-04', 'naissance-parents-nb', 'animaux-berger-heure-doree', 'mariage-couple-chateau', 'grossesse-couple-couleur', 'bapteme-chaussons-chapelet', 'portrait-homme-verdure'];
   const supports = P.filter((p) => p.cat === 'tableaux');
@@ -128,6 +129,8 @@
     let pc = pieces.find((p) => p.id === mur.piece);
     if (pc.mobile && window.matchMedia('(max-width: 640px)').matches) pc = Object.assign({}, pc, pc.mobile);
     pieceEl.style.aspectRatio = String(pc.ar);
+    /* sur téléphone, l'aperçu tient dans la moitié de l'écran pour rester visible pendant les réglages */
+    pieceEl.style.width = window.matchMedia('(max-width: 960px)').matches ? 'min(100%, calc(46svh * ' + pc.ar.toFixed(4) + '))' : '';
     const urlFond = PX.url(pc.img, 1168);
     if (fond.getAttribute('src') !== urlFond) fond.src = urlFond;
     if (oeuvre.dataset.k !== mur.photo) { oeuvre.innerHTML = PX.img(mur.photo, { w: 960, sizes: '40vw', alt: '' }); oeuvre.dataset.k = mur.photo; }
@@ -146,11 +149,11 @@
     cadre.style.setProperty('--k', kpx.toFixed(2) + 'px');
     cadre.style.setProperty('--caisse', couleur ? caisses[couleur] : 'transparent');
     $('#m-echelle').textContent = pieces.find((p) => p.id === mur.piece).repere + ' · tableau ' + wcm + ' × ' + hcm + ' cm';
-    const trop = pc.bas * 100 - hp < 2;
+    const trop = pc.bas * 100 - hp < 2 || wp > 96;
     alerte.hidden = !trop;
-    if (trop) alerte.textContent = 'Ce format dépasse le mur visible : essayez une autre pièce ou un format plus petit.';
+    if (trop) alerte.textContent = 'Ce format dépasse le mur visible : essayez une autre pièce ou un format plus petit.';
     $('#m-prix').textContent = 'dès ' + PX.euros(s.prix);
-    if (animer && anime) G.fromTo(cadre, { yPercent: -8 }, { yPercent: 0, duration: 0.7, ease: 'back.out(2)', overwrite: 'auto' });
+    if (animer && anime) G.fromTo(cadre.children, { y: -14 }, { y: 0, duration: 0.7, ease: 'back.out(2)', overwrite: 'auto' });
   }
   $('.mur__ctrl').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
@@ -161,7 +164,7 @@
     else if (b.dataset.finition !== undefined) mur.finition = +b.dataset.finition;
     else if (b.id === 'm-ajouter') {
       const s = supports.find((x) => x.id === mur.support);
-      const detail = s.formats[mur.format] + ' · ' + s.finitions[mur.finition] + ' · photo d’exemple';
+      const detail = s.formats[mur.format] + ' · ' + s.finitions[mur.finition] + ' · photo à choisir';
       PX.panier.ajouter({ cle: s.id + '|' + detail, id: s.id, nom: s.nom, detail, prix: s.prix, img: mur.photo, aConfirmer: true }, cadre);
       return;
     } else return;
@@ -175,18 +178,20 @@
   const ccMontants = $('#cc-montants'), ccVue = $('#cc-montant-vue'), ccLibre = $('#cc-libre'), ccAutre = $('#cc-autre');
   let montant = 50;
   ccMontants.innerHTML = D.carteCadeau.montants.map((m) => '<button type="button" data-m="' + m + '" aria-pressed="' + (m === montant) + '">' + m + ' €</button>').join('') + '<button type="button" data-m="autre" aria-pressed="false">Autre montant</button>';
-  const majMontant = (v) => { const de = +ccVue.textContent || 0; montant = v; PX.compter(ccVue, v, { de, duree: 0.7 }); };
+  const majMontant = (v) => { const de = +ccVue.textContent || 0; montant = v; if (G) G.killTweensOf(ccVue); PX.compter(ccVue, v, { de, duree: 0.7 }); };
   ccMontants.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     $$('button', ccMontants).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     ccLibre.hidden = b.dataset.m !== 'autre';
     majMontant(b.dataset.m === 'autre' ? Math.max(10, +ccAutre.value || 10) : +b.dataset.m);
   });
-  ccAutre.addEventListener('input', () => { const v = Math.max(1, Math.round(+ccAutre.value || 0)); montant = v; ccVue.textContent = v; });
+  ccAutre.addEventListener('input', () => { const v = Math.max(10, Math.round(+ccAutre.value || 0)); montant = v; if (G) G.killTweensOf(ccVue); ccVue.textContent = v; });
+  ccAutre.addEventListener('change', () => { if ((+ccAutre.value || 0) < 10) { ccAutre.value = 10; PX.toast('Montant minimum : 10\u202f€'); } });
   $('#cc-pour').addEventListener('input', (e) => { $('#cc-pour-vue').textContent = e.target.value ? 'Pour ' + e.target.value : ''; });
   $('#cc-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const pour = $('#cc-pour').value.trim(), de = $('#cc-de').value.trim();
+    if (!ccLibre.hidden) { montant = Math.max(10, Math.round(+ccAutre.value || 0)); ccAutre.value = montant; if (G) G.killTweensOf(ccVue); ccVue.textContent = montant; }
     PX.panier.ajouter({ cle: 'cadeau|' + montant + '|' + pour + '|' + de, id: 'carte-cadeau', nom: 'Carte cadeau ' + PX.euros(montant), detail: [pour && 'Pour ' + pour, de && 'De ' + de].filter(Boolean).join(' · ') || 'Valable 1 an', prix: montant, img: 'grok-feuille-or' }, $('#cc-carte'));
   });
   const carteC = $('#cc-carte');

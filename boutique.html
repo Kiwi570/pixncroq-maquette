@@ -8,11 +8,23 @@
 <meta name="description" content="Tirages, albums, tableaux sur toile, aluminium ou verre acrylique, coffret en bois et carte cadeau : la boutique de Liz Leroy, avec essai au mur à l’échelle réelle.">
 <meta name="theme-color" content="#1D1511">
 <meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Pix’n Croq by Liz Leroy">
+<meta property="og:title" content="Boutique · Pix’n Croq">
+<meta property="og:description" content="Tirages, albums, tableaux sur toile, aluminium ou verre acrylique, coffret en bois et carte cadeau : la boutique de Liz Leroy, avec essai au mur à l’échelle réelle.">
+<meta property="og:image" content="https://pixncroq-maquette.vercel.app/assets/img/partage.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mariés dans une prairie au soleil couchant, photographiés par Liz Leroy">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="assets/fonts/fraunces-var.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="assets/vendor/lenis.css">
-<link rel="stylesheet" href="assets/css/main.css">
+<link rel="apple-touch-icon" href="assets/img/icone-180.png">
+<link rel="preload" href="assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/fraunces-italic-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/vendor/lenis.css?v=599bcc02">
+<link rel="stylesheet" href="assets/css/main.css?v=5c7f9f37">
 
 </head>
 <body data-page="boutique" data-entete="solide">
@@ -20,30 +32,35 @@
 <header class="entete">
   <div class="entete__in">
     <a class="marque" href="index.html" aria-label="Pix’n Croq by Liz Leroy, accueil"><b>Pix’n <i>Croq</i></b><small>by Liz Leroy</small></a>
-    <div class="compteur" aria-hidden="true"><span>Vue</span><span class="compteur__num"><span>01</span></span><span>/36</span><span class="compteur__nom"></span></div>
+    <div class="compteur" aria-hidden="true"><span>Vue</span><span class="compteur__num"><span>01</span></span><span class="compteur__total">/00</span><span class="compteur__nom"></span></div>
     <nav class="nav" aria-label="Navigation principale">
-      <a href="seances.html">Séances</a>
+      <a href="seances.html">Séances &amp; tarifs</a>
       <a href="boutique.html" aria-current="page">Boutique</a>
-      <a href="index.html#liz">Liz</a>
-      <a href="index.html#zone">Zone</a>
+      <a href="boutique.html#cadeau">Carte cadeau</a>
+      <a href="index.html#liz">À propos</a>
     </nav>
     <div class="outils">
-      <button class="outil" id="btn-son" type="button" aria-pressed="false" aria-label="Son du déclencheur" title="Son du déclencheur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span class="lbl">Son</span></button>
-      <button class="outil" id="btn-calme" type="button" aria-pressed="false" title="Réduire les animations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg><span class="lbl">Mode calme</span></button>
+      <button class="outil" data-action="son" type="button" aria-pressed="false" aria-label="Son du déclencheur" title="Son du déclencheur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span class="lbl">Son</span></button>
+      <button class="outil" data-action="calme" type="button" aria-pressed="false" aria-label="Mode calme : réduire les animations" title="Réduire les animations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg><span class="lbl">Mode calme</span></button>
       <button class="outil panier-btn" type="button" aria-label="Ouvrir le panier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="nb">0</span></button>
       <a class="btn btn--petit reserver-cta" href="index.html#reserver" data-magnet>Réserver</a>
       <button class="outil menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
     </div>
   </div>
 </header>
-<div class="menu" id="menu" role="dialog" aria-label="Menu">
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
   <button class="outil menu-fermer" type="button" aria-label="Fermer le menu">Fermer</button>
-  <a href="seances.html">Séances</a>
+  <a href="seances.html">Séances &amp; tarifs</a>
   <a href="boutique.html">Boutique</a>
-  <a href="index.html#liz">Liz</a>
-  <a href="index.html#zone">Zone</a>
+  <a href="boutique.html#cadeau">Carte cadeau</a>
+  <a href="index.html#liz">À propos</a>
   <a href="index.html#reserver">Réserver</a>
-  <div class="menu__pied"><span>06 47 52 32 37</span><span>croqnpix@gmail.com</span><span>Ugny, près de Longwy (54)</span></div>
+  <a class="menu__lien-petit" href="index.html#zone">Zone d’intervention et frais</a>
+  <div class="menu__outils">
+    <button class="outil" data-action="son" type="button" aria-pressed="false"><span>Son du déclencheur</span></button>
+    <button class="outil" data-action="calme" type="button" aria-pressed="false"><span>Mode calme</span></button>
+  </div>
+  <div class="menu__pied"><a class="lien" href="tel:+33647523237">06 47 52 32 37</a><a class="lien" href="mailto:croqnpix@gmail.com">croqnpix@gmail.com</a><span>Ugny, près de Longwy (54)</span></div>
 </div>
 <div class="flash" aria-hidden="true"></div>
 
@@ -66,7 +83,7 @@
       <div class="titre-section">
         <p class="etiquette">12 produits et la carte cadeau</p>
         <h2 id="p-titre" data-titre>Tous les <em>produits</em></h2>
-        <p>Les visuels sont dessinés avec les photos de Liz : sur la vraie boutique, vous choisissez les vôtres après la commande.</p>
+        <p>Vous choisissez vos photos après la commande : je vous les demande par e-mail, avec les détails de personnalisation.</p>
       </div>
       <div class="filtres" role="group" aria-label="Filtrer les produits">
         <button type="button" data-filtre="tout" aria-pressed="true">Tout</button>
@@ -79,15 +96,15 @@
     </div>
   </section>
 
-  <section class="mur" id="mur" data-vue="Voir au mur" aria-labelledby="m-titre">
+  <section class="mur sombre" id="mur" data-vue="Voir au mur" aria-labelledby="m-titre">
     <div class="wrap">
       <div class="titre-section">
         <p class="etiquette">Voir au mur</p>
         <h2 id="m-titre" data-titre>Votre tableau, <em>à l’échelle réelle</em></h2>
-        <p>Choisissez la pièce, la photo, le support, le format et la finition : le tableau se pose sur le mur à sa vraie taille.</p>
+        <p>Choisissez la pièce, la photo, le support, le format et la finition : le tableau se pose sur le mur à sa vraie taille.</p>
       </div>
       <div class="mur__in">
-        <div>
+        <div class="mur__apercu">
           <div class="mur__piece" id="m-piece">
             <img id="m-fond" alt="Pièce d’exemple générée, mur vide">
             <div class="mur__cadre" id="m-cadre" data-support="toile"><div class="ombre"></div><div class="oeuvre-mur" id="m-oeuvre"></div><div class="matiere"></div><div class="caisse"></div></div>
@@ -98,7 +115,7 @@
         </div>
         <div class="mur__ctrl">
           <div><span class="etiquette">Pièce</span><div class="puces-choix" id="m-pieces"></div></div>
-          <div><span class="etiquette">Photo d’exemple</span><div class="vignettes" id="m-photos"></div></div>
+          <div><span class="etiquette">Photo</span><div class="vignettes" id="m-photos"></div></div>
           <div><span class="etiquette">Support</span><div class="puces-choix" id="m-supports"></div></div>
           <div><span class="etiquette">Format</span><div class="puces-choix" id="m-formats"></div></div>
           <div><span class="etiquette">Finition</span><div class="puces-choix" id="m-finitions"></div></div>
@@ -113,7 +130,7 @@
       <div class="scene-carte" style="background:var(--lin);border-radius:var(--r);position:relative;overflow:hidden;min-height:420px">
         <div class="cadeau__fond" data-fond="grok-kraft-cadeau" style="--fond:url(../img/grok/grok-kraft-cadeau-1168.webp)" aria-hidden="true"></div>
         <div class="carte-cadeau" id="cc-carte" aria-hidden="true">
-          <div class="carte-cadeau__or" data-fond="grok-feuille-or" style="--fond:url(../img/grok/grok-feuille-or-784.webp)"></div>
+          <div class="carte-cadeau__or" data-fond="grok-feuille-or" style="--fond:url(../img/grok/grok-feuille-or-480.webp)"></div>
           <div class="carte-cadeau__in">
             <div class="carte-cadeau__haut"><b>Pix’n <i>Croq</i></b><small>Carte cadeau</small></div>
             <div class="carte-cadeau__montant"><span id="cc-montant-vue">50</span>&#8239;€</div>
@@ -128,7 +145,7 @@
         <h2 id="cc-titre" data-titre>Composer <em>une carte cadeau</em></h2>
         <p style="color:var(--fumee)">Valable 1 an à compter de la date d’achat.</p>
         <div><span class="etiquette">Montant</span><div class="puces-choix" id="cc-montants" style="margin-top:.5rem"></div></div>
-        <div class="ch" id="cc-libre" hidden><label for="cc-autre">Autre montant (€)</label><input id="cc-autre" type="number" min="10" step="5" value="80" inputmode="numeric"></div>
+        <div class="ch" id="cc-libre" hidden><label for="cc-autre">Autre montant (€)</label><input id="cc-autre" type="number" min="10" step="5" value="80" inputmode="numeric" aria-describedby="cc-min"><small id="cc-min" class="note-maquette">10 € minimum</small></div>
         <div class="grille-2">
           <div class="ch"><label for="cc-pour">Pour</label><input id="cc-pour" maxlength="40" placeholder="Prénom de la personne"></div>
           <div class="ch"><label for="cc-de">De la part de</label><input id="cc-de" maxlength="40"></div>
@@ -142,14 +159,14 @@
   <section class="u-section" style="background:var(--lin)" data-vue="Le coffret" aria-labelledby="co-titre">
     <div class="wrap">
       <div class="titre-section">
-        <p class="etiquette">Photos réelles du produit</p>
+        <p class="etiquette">Coffret 10 × 15 cm</p>
         <h2 id="co-titre" data-titre>Le coffret en bois <em>gravé</em></h2>
-        <p>Bois rustique foncé, mousse protectrice et ficelle naturelle pour vos tirages 10x15, avec ou sans clé USB gravée.</p>
+        <p>Bois rustique foncé, mousse protectrice et ficelle naturelle pour vos tirages 10 × 15, avec ou sans clé USB gravée.</p>
       </div>
       <div class="coffret-photos">
-        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-grave-828.webp" srcset="assets/img/photos/coffret-bois-grave-480.webp 480w, assets/img/photos/coffret-bois-grave-828.webp 828w" sizes="(min-width: 700px) 36vw, 100vw" width="828" height="829" alt="Coffret en bois gravé Pix’n Croq" loading="lazy" decoding="async" data-px="coffret-bois-grave"></figure>
-        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-tirages-828.webp" srcset="assets/img/photos/coffret-bois-tirages-480.webp 480w, assets/img/photos/coffret-bois-tirages-828.webp 828w" sizes="(min-width: 700px) 30vw, 50vw" width="828" height="1055" alt="Coffret en bois ouvert avec tirages et ficelle" loading="lazy" decoding="async" data-px="coffret-bois-tirages"></figure>
-        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-cle-usb-828.webp" srcset="assets/img/photos/coffret-bois-cle-usb-480.webp 480w, assets/img/photos/coffret-bois-cle-usb-828.webp 828w" sizes="(min-width: 700px) 30vw, 50vw" width="828" height="858" alt="Clé USB en bois gravée tenue au-dessus du coffret" loading="lazy" decoding="async" data-px="coffret-bois-cle-usb"></figure>
+        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-grave-828.webp" srcset="assets/img/photos/coffret-bois-grave-480.webp 480w, assets/img/photos/coffret-bois-grave-828.webp 828w" sizes="(min-width: 700px) 36vw, 100vw" width="828" height="829" alt="Coffret en bois gravé Pix’n Croq" loading="lazy" decoding="async" style="background-color:#7e7473" data-px="coffret-bois-grave"></figure>
+        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-tirages-828.webp" srcset="assets/img/photos/coffret-bois-tirages-480.webp 480w, assets/img/photos/coffret-bois-tirages-828.webp 828w" sizes="(min-width: 700px) 30vw, 50vw" width="828" height="1055" alt="Coffret en bois ouvert avec tirages et ficelle" loading="lazy" decoding="async" style="background-color:#6e6766" data-px="coffret-bois-tirages"></figure>
+        <figure data-revele="photo"><img src="assets/img/photos/coffret-bois-cle-usb-828.webp" srcset="assets/img/photos/coffret-bois-cle-usb-480.webp 480w, assets/img/photos/coffret-bois-cle-usb-828.webp 828w" sizes="(min-width: 700px) 30vw, 50vw" width="828" height="858" alt="Clé USB en bois gravée tenue au-dessus du coffret" loading="lazy" decoding="async" style="background-color:#7d6663" data-px="coffret-bois-cle-usb"></figure>
       </div>
     </div>
   </section>
@@ -162,18 +179,18 @@
         <p>Couvertures d’album, coffrets et caisses américaines, en gros plan.</p>
       </div>
       <div class="finitions">
-        <figure><img src="assets/img/photos/album-finition-lin-632.webp" srcset="assets/img/photos/album-finition-lin-480.webp 480w, assets/img/photos/album-finition-lin-632.webp 632w" sizes="160px" width="632" height="438" alt="Finition de couverture en lin avec ruban blanc" loading="lazy" decoding="async" data-px="album-finition-lin"><figcaption>Couverture lin, ruban blanc</figcaption></figure>
-        <figure><img src="assets/img/photos/album-finition-lin-noir-632.webp" srcset="assets/img/photos/album-finition-lin-noir-480.webp 480w, assets/img/photos/album-finition-lin-noir-632.webp 632w" sizes="160px" width="632" height="436" alt="Finition de couverture en lin avec ruban noir" loading="lazy" decoding="async" data-px="album-finition-lin-noir"><figcaption>Couverture lin, ruban noir</figcaption></figure>
-        <figure><img src="assets/img/photos/album-finition-noir-634.webp" srcset="assets/img/photos/album-finition-noir-480.webp 480w, assets/img/photos/album-finition-noir-634.webp 634w" sizes="160px" width="634" height="450" alt="Finition de couverture noire avec ruban noir" loading="lazy" decoding="async" data-px="album-finition-noir"><figcaption>Couverture noire</figcaption></figure>
-        <figure><img src="assets/img/photos/album-finition-blanc-630.webp" srcset="assets/img/photos/album-finition-blanc-480.webp 480w, assets/img/photos/album-finition-blanc-630.webp 630w" sizes="160px" width="630" height="438" alt="Finition de couverture blanche avec ruban blanc" loading="lazy" decoding="async" data-px="album-finition-blanc"><figcaption>Couverture blanche</figcaption></figure>
-        <figure><img src="assets/img/photos/album-finition-acrylique-noir-622.webp" srcset="assets/img/photos/album-finition-acrylique-noir-480.webp 480w, assets/img/photos/album-finition-acrylique-noir-622.webp 622w" sizes="160px" width="622" height="442" alt="Coffret avec verre acrylique, bord noir" loading="lazy" decoding="async" data-px="album-finition-acrylique-noir"><figcaption>Coffret verre acrylique, noir</figcaption></figure>
-        <figure><img src="assets/img/photos/album-finition-acrylique-blanc-630.webp" srcset="assets/img/photos/album-finition-acrylique-blanc-480.webp 480w, assets/img/photos/album-finition-acrylique-blanc-630.webp 630w" sizes="160px" width="630" height="440" alt="Coffret avec verre acrylique, bord blanc" loading="lazy" decoding="async" data-px="album-finition-acrylique-blanc"><figcaption>Coffret verre acrylique, blanc</figcaption></figure>
-        <figure><img src="assets/img/photos/caisse-noire-632.webp" srcset="assets/img/photos/caisse-noire-480.webp 480w, assets/img/photos/caisse-noire-632.webp 632w" sizes="160px" width="632" height="452" alt="Angle de caisse américaine noire" loading="lazy" decoding="async" data-px="caisse-noire"><figcaption>Caisse américaine noire</figcaption></figure>
-        <figure><img src="assets/img/photos/caisse-blanche-628.webp" srcset="assets/img/photos/caisse-blanche-480.webp 480w, assets/img/photos/caisse-blanche-628.webp 628w" sizes="160px" width="628" height="446" alt="Angle de caisse américaine blanche" loading="lazy" decoding="async" data-px="caisse-blanche"><figcaption>Caisse américaine blanche</figcaption></figure>
-        <figure><img src="assets/img/photos/caisse-bois-clair-620.webp" srcset="assets/img/photos/caisse-bois-clair-480.webp 480w, assets/img/photos/caisse-bois-clair-620.webp 620w" sizes="160px" width="620" height="432" alt="Angle de caisse américaine en bois clair" loading="lazy" decoding="async" data-px="caisse-bois-clair"><figcaption>Caisse bois <span class="a-completer">chêne ou frêne ?</span></figcaption></figure>
-        <figure><img src="assets/img/photos/caisse-bois-dore-618.webp" srcset="assets/img/photos/caisse-bois-dore-480.webp 480w, assets/img/photos/caisse-bois-dore-618.webp 618w" sizes="160px" width="618" height="442" alt="Angle de caisse américaine en bois doré" loading="lazy" decoding="async" data-px="caisse-bois-dore"><figcaption>Caisse bois <span class="a-completer">chêne ou frêne ?</span></figcaption></figure>
-        <figure><img src="assets/img/photos/toile-dos-suspension-640.webp" srcset="assets/img/photos/toile-dos-suspension-480.webp 480w, assets/img/photos/toile-dos-suspension-640.webp 640w" sizes="160px" width="640" height="456" alt="Dos d’une toile avec châssis bois et suspension" loading="lazy" decoding="async" data-px="toile-dos-suspension"><figcaption>Dos de toile, suspension intégrée</figcaption></figure>
-        <figure><img src="assets/img/photos/tableau-profil-630.webp" srcset="assets/img/photos/tableau-profil-480.webp 480w, assets/img/photos/tableau-profil-630.webp 630w" sizes="160px" width="630" height="434" alt="Angle d’un tableau avec profilé" loading="lazy" decoding="async" data-px="tableau-profil"><figcaption>Bord d’un tableau, profilé</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-lin-632.webp" srcset="assets/img/photos/album-finition-lin-480.webp 480w, assets/img/photos/album-finition-lin-632.webp 632w" sizes="160px" width="632" height="438" alt="Finition de couverture en lin avec ruban blanc" loading="lazy" decoding="async" style="background-color:#c8c4c0" data-px="album-finition-lin"><figcaption>Couverture lin, ruban blanc</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-lin-noir-632.webp" srcset="assets/img/photos/album-finition-lin-noir-480.webp 480w, assets/img/photos/album-finition-lin-noir-632.webp 632w" sizes="160px" width="632" height="436" alt="Finition de couverture en lin avec ruban noir" loading="lazy" decoding="async" style="background-color:#aca7a3" data-px="album-finition-lin-noir"><figcaption>Couverture lin, ruban noir</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-noir-634.webp" srcset="assets/img/photos/album-finition-noir-480.webp 480w, assets/img/photos/album-finition-noir-634.webp 634w" sizes="160px" width="634" height="450" alt="Finition de couverture noire avec ruban noir" loading="lazy" decoding="async" style="background-color:#656565" data-px="album-finition-noir"><figcaption>Couverture noire</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-blanc-630.webp" srcset="assets/img/photos/album-finition-blanc-480.webp 480w, assets/img/photos/album-finition-blanc-630.webp 630w" sizes="160px" width="630" height="438" alt="Finition de couverture blanche avec ruban blanc" loading="lazy" decoding="async" style="background-color:#e3e3e3" data-px="album-finition-blanc"><figcaption>Couverture blanche</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-acrylique-noir-622.webp" srcset="assets/img/photos/album-finition-acrylique-noir-480.webp 480w, assets/img/photos/album-finition-acrylique-noir-622.webp 622w" sizes="160px" width="622" height="442" alt="Coffret avec verre acrylique, bord noir" loading="lazy" decoding="async" style="background-color:#868a8c" data-px="album-finition-acrylique-noir"><figcaption>Coffret verre acrylique, noir</figcaption></figure>
+        <figure><img src="assets/img/photos/album-finition-acrylique-blanc-630.webp" srcset="assets/img/photos/album-finition-acrylique-blanc-480.webp 480w, assets/img/photos/album-finition-acrylique-blanc-630.webp 630w" sizes="160px" width="630" height="440" alt="Coffret avec verre acrylique, bord blanc" loading="lazy" decoding="async" style="background-color:#d0d4d6" data-px="album-finition-acrylique-blanc"><figcaption>Coffret verre acrylique, blanc</figcaption></figure>
+        <figure><img src="assets/img/photos/caisse-noire-632.webp" srcset="assets/img/photos/caisse-noire-480.webp 480w, assets/img/photos/caisse-noire-632.webp 632w" sizes="160px" width="632" height="452" alt="Angle de caisse américaine noire" loading="lazy" decoding="async" style="background-color:#62869e" data-px="caisse-noire"><figcaption>Caisse américaine noire</figcaption></figure>
+        <figure><img src="assets/img/photos/caisse-blanche-628.webp" srcset="assets/img/photos/caisse-blanche-480.webp 480w, assets/img/photos/caisse-blanche-628.webp 628w" sizes="160px" width="628" height="446" alt="Angle de caisse américaine blanche" loading="lazy" decoding="async" style="background-color:#7ca2bb" data-px="caisse-blanche"><figcaption>Caisse américaine blanche</figcaption></figure>
+        <figure><img src="assets/img/photos/caisse-bois-clair-620.webp" srcset="assets/img/photos/caisse-bois-clair-480.webp 480w, assets/img/photos/caisse-bois-clair-620.webp 620w" sizes="160px" width="620" height="432" alt="Angle de caisse américaine en bois clair" loading="lazy" decoding="async" style="background-color:#7a9eb3" data-px="caisse-bois-clair"><figcaption>Caisse bois <span class="a-completer">chêne ou frêne ?</span></figcaption></figure>
+        <figure><img src="assets/img/photos/caisse-bois-dore-618.webp" srcset="assets/img/photos/caisse-bois-dore-480.webp 480w, assets/img/photos/caisse-bois-dore-618.webp 618w" sizes="160px" width="618" height="442" alt="Angle de caisse américaine en bois doré" loading="lazy" decoding="async" style="background-color:#7899ab" data-px="caisse-bois-dore"><figcaption>Caisse bois <span class="a-completer">chêne ou frêne ?</span></figcaption></figure>
+        <figure><img src="assets/img/photos/toile-dos-suspension-640.webp" srcset="assets/img/photos/toile-dos-suspension-480.webp 480w, assets/img/photos/toile-dos-suspension-640.webp 640w" sizes="160px" width="640" height="456" alt="Dos d’une toile avec châssis bois et suspension" loading="lazy" decoding="async" style="background-color:#f3efeb" data-px="toile-dos-suspension"><figcaption>Dos de toile, suspension intégrée</figcaption></figure>
+        <figure><img src="assets/img/photos/tableau-profil-630.webp" srcset="assets/img/photos/tableau-profil-480.webp 480w, assets/img/photos/tableau-profil-630.webp 630w" sizes="160px" width="630" height="434" alt="Angle d’un tableau avec profilé" loading="lazy" decoding="async" style="background-color:#f6f6f6" data-px="tableau-profil"><figcaption>Bord d’un tableau, profilé</figcaption></figure>
       </div>
     </div>
   </section>
@@ -182,8 +199,8 @@
     <div class="wrap">
       <div class="infos">
         <div class="info"><span class="etiquette">Retrait</span><b>Au home studio, gratuit</b><p>Contrôle qualité systématique avant la remise.</p></div>
-        <div class="info"><span class="etiquette">Livraison</span><b>À domicile par Liz</b><p>Supplément selon le produit : 10 € (coffret), 20 € (albums, tirages), 25 € (tableaux). Traitement prioritaire : +10 € ou +20 €.</p></div>
-        <div class="info"><span class="etiquette">Personnalisation</span><b>Par e-mail après l’achat</b><p>Photos, écritures, gravure : vous les envoyez par e-mail. Produits personnalisés, donc ni retour, ni échange, ni remboursement après validation.</p></div>
+        <div class="info"><span class="etiquette">Livraison</span><b>Je livre à domicile</b><p>Supplément selon le produit : 10 € (coffret), 20 € (albums, tirages), 25 € (tableaux). Traitement prioritaire : +10 € ou +20 €.</p></div>
+        <div class="info"><span class="etiquette">Personnalisation</span><b>Par e-mail après l’achat</b><p>Photos, écritures, gravure : vous les envoyez par e-mail. Produits personnalisés, donc ni retour, ni échange, ni remboursement après validation.</p></div>
       </div>
     </div>
   </section>
@@ -200,35 +217,35 @@
     <svg class="pied__marque" viewBox="0 0 1200 210" role="img" aria-label="Pix’n Croq"><text x="0" y="170" font-size="196">Pix’n Croq</text></svg>
     <div class="pied__grille">
       <div>
-        <h4>Le studio</h4>
+        <p class="pied__titre">Le studio</p>
         <ul><li>Liz Leroy, photographe</li><li>9 rue de Fontigny</li><li>54870 Ugny, près de Longwy</li><li>Séances en extérieur, à domicile et au home studio</li></ul>
       </div>
       <div>
-        <h4>Contact</h4>
-        <ul><li>06 47 52 32 37</li><li>croqnpix@gmail.com</li><li><a class="lien" href="index.html#reserver">Demande de séance</a></li></ul>
+        <p class="pied__titre">Contact</p>
+        <ul><li><a class="lien" href="tel:+33647523237">06 47 52 32 37</a></li><li><a class="lien" href="mailto:croqnpix@gmail.com">croqnpix@gmail.com</a></li><li><a class="lien" href="index.html#reserver">Demande de séance</a></li></ul>
       </div>
       <div>
-        <h4>Suivre</h4>
+        <p class="pied__titre">Suivre</p>
         <ul><li><a class="lien" href="https://www.instagram.com/pix.n.croq_/" target="_blank" rel="noopener">Instagram</a></li><li><a class="lien" href="https://www.facebook.com/share/195W3ZWMXJ/" target="_blank" rel="noopener">Facebook</a></li><li><a class="lien" href="https://www.tiktok.com/@pix.n.croq_" target="_blank" rel="noopener">TikTok</a></li><li><a class="lien" href="https://g.page/r/CSLnjXo36XrMEAE/review" target="_blank" rel="noopener">Laisser un avis Google</a></li></ul>
       </div>
       <div>
-        <h4>Informations</h4>
-        <ul><li><a class="lien" href="mentions.html">Mentions légales</a></li><li>CGV <span class="a-completer">à rédiger</span></li><li>Confidentialité <span class="a-completer">à compléter</span></li><li><a class="lien" href="seances.html">Tous les tarifs</a></li></ul>
+        <p class="pied__titre">Informations</p>
+        <ul><li><a class="lien" href="seances.html">Séances et tarifs</a></li><li><a class="lien" href="boutique.html#cadeau">Carte cadeau</a></li><li><a class="lien" href="mentions.html">Mentions légales</a></li><li>CGV <span class="a-completer">à rédiger</span></li><li>Confidentialité <span class="a-completer">à compléter</span></li></ul>
       </div>
     </div>
-    <div class="pied__bas"><span>© 2026 Liz Leroy · EI · SIRET 988 136 925 00019</span><span>Maquette : textes et tarifs repris du site actuel, aucun formulaire ni paiement réel</span></div>
+    <div class="pied__bas"><span>© 2026 Liz Leroy · EI · SIRET 988 136 925 00019</span><span class="maquette">Maquette : textes et tarifs repris du site actuel, aucun formulaire ni paiement réel</span><button class="bascule-notes" type="button" data-action="notes" aria-pressed="false">Masquer les notes de maquette</button></div>
   </div>
 </footer>
 
-<script src="assets/vendor/gsap.min.js" defer></script>
-<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-<script src="assets/vendor/SplitText.min.js" defer></script>
-<script src="assets/vendor/CustomEase.min.js" defer></script>
-<script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/images.js" defer></script>
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/core.js" defer></script>
-<script type="module" src="assets/js/gl.js"></script>
-<script src="assets/js/boutique.js" defer></script>
+<script src="assets/vendor/gsap.min.js?v=9396f256" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js?v=05ca5ad8" defer></script>
+<script src="assets/vendor/SplitText.min.js?v=6c4c7716" defer></script>
+<script src="assets/vendor/CustomEase.min.js?v=d11c0971" defer></script>
+<script src="assets/vendor/lenis.min.js?v=99a73c03" defer></script>
+<script src="assets/js/images.js?v=96feea10" defer></script>
+<script src="assets/js/data.js?v=7490673d" defer></script>
+<script src="assets/js/core.js?v=cbd244c3" defer></script>
+<script type="module" src="assets/js/gl.js?v=a9bfb216"></script>
+<script src="assets/js/boutique.js?v=3347098e" defer></script>
 </body>
 </html>
