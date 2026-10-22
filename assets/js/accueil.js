@@ -291,6 +291,13 @@
         .to('.ouverture__actions', { y: 0, autoAlpha: 1, duration: 0.9 }, '-=0.7')
         .to('.ouverture__exif', { y: 0, autoAlpha: 1, duration: 0.9 }, '-=0.8');
       G.to('.ouverture__cadre', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.ouverture', start: 'top top', end: 'bottom top', scrub: true } });
+      /* sur grand écran, le texte posé sur la photo s'efface avant de passer sous l'en-tête */
+      if (G.matchMedia) G.matchMedia().add('(min-width: 1001px)', () => {
+        const ouv = $('.ouverture'), texte = $('.ouverture__texte'), titre = $('.ouverture__titre'), ent = $('.entete');
+        const course = () => Math.max(240, ouv.offsetTop + texte.offsetTop + titre.offsetTop - (ent ? ent.offsetHeight : 80) - 10);
+        G.to(texte, { opacity: 0, y: -36, ease: 'power2.in', scrollTrigger: { trigger: ouv, start: 'top top', end: () => '+=' + course(), scrub: true, invalidateOnRefresh: true } });
+        G.to('.ouverture__haut', { opacity: 0, ease: 'none', scrollTrigger: { trigger: ouv, start: 'top top', end: '+=140', scrub: true } });
+      });
     }
     PX.reveler();
   });
