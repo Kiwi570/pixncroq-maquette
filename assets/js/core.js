@@ -205,6 +205,7 @@
   PX.pieger = (boite) => {
     const avant = document.activeElement;
     fonds().forEach((el) => { if (!el.contains(boite)) el.inert = true; });
+    document.documentElement.classList.add('verrou'); // verrou du défilement, aussi sans Lenis (mode calme)
     const clavier = (e) => {
       if (e.key !== 'Tab') return;
       const f = Array.from(boite.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter((x) => x.offsetParent !== null || x === document.activeElement);
@@ -213,7 +214,7 @@
       else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
     };
     boite.addEventListener('keydown', clavier);
-    return () => { boite.removeEventListener('keydown', clavier); fonds().forEach((el) => { el.inert = false; }); if (avant && avant.focus) avant.focus(); };
+    return () => { boite.removeEventListener('keydown', clavier); fonds().forEach((el) => { el.inert = false; }); document.documentElement.classList.remove('verrou'); if (avant && avant.focus) avant.focus(); };
   };
 
   /* ---------- Menu mobile ---------- */
@@ -397,7 +398,7 @@
   let lignes = [];
   try { lignes = JSON.parse(PX.store.get(panierCle) || '[]') || []; } catch (e) { lignes = []; }
   const tiroir = document.createElement('aside');
-  tiroir.className = 'panier'; tiroir.setAttribute('aria-label', 'Panier'); tiroir.setAttribute('aria-hidden', 'true'); tiroir.inert = true;
+  tiroir.className = 'panier'; tiroir.setAttribute('role', 'dialog'); tiroir.setAttribute('aria-modal', 'true'); tiroir.setAttribute('aria-label', 'Panier'); tiroir.setAttribute('aria-hidden', 'true'); tiroir.inert = true;
   tiroir.innerHTML = '<div class="panier__tete"><h2>Panier</h2><button class="outil" type="button" data-fermer-panier aria-label="Fermer le panier"><span>Fermer</span></button></div><div class="panier__liste" data-lenis-prevent></div><div class="panier__pied"></div>';
   const voile = document.createElement('div'); voile.className = 'panier-voile';
   document.body.append(voile, tiroir);
@@ -410,6 +411,7 @@
   const supplement = () => lignes.reduce((m, l) => Math.max(m, (produitDe(l.id) || {}).livraison || 0), 0);
   function majBoutons() {
     document.querySelectorAll('.panier-btn .nb').forEach((n) => { n.textContent = nb(); });
+    document.querySelectorAll('.panier-btn').forEach((b) => { const k = nb(); b.setAttribute('aria-label', 'Ouvrir le panier, ' + k + ' article' + (k > 1 ? 's' : '')); });
   }
   function rendrePanier() {
     majBoutons();

@@ -3,16 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
 <title>Pix’n Croq by Liz Leroy</title>
-<meta name="description" content="Liz Leroy, photographe lifestyle à Ugny près de Longwy : séances famille, couple, grossesse, naissance, mariage, baptême et animaux, en extérieur, à domicile ou au home studio.">
+<meta name="description" content="Liz Leroy, photographe lifestyle à Ugny près de Longwy&nbsp;: séances famille, couple, grossesse, naissance, mariage, baptême et animaux, en extérieur, à domicile ou au home studio.">
 <meta name="theme-color" content="#1D1511">
 <meta name="robots" content="noindex">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Pix’n Croq by Liz Leroy">
 <meta property="og:title" content="Pix’n Croq by Liz Leroy">
-<meta property="og:description" content="Liz Leroy, photographe lifestyle à Ugny près de Longwy : séances famille, couple, grossesse, naissance, mariage, baptême et animaux, en extérieur, à domicile ou au home studio.">
+<meta property="og:description" content="Liz Leroy, photographe lifestyle à Ugny près de Longwy&nbsp;: séances famille, couple, grossesse, naissance, mariage, baptême et animaux, en extérieur, à domicile ou au home studio.">
 <meta property="og:image" content="https://pixncroq-maquette.vercel.app/assets/img/partage.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,6 +25,7 @@
 <link rel="stylesheet" href="assets/vendor/lenis.css?v=599bcc02">
 <link rel="stylesheet" href="assets/css/main.css?v=0df4646b">
 
+<noscript><style>.chargement{display:none}</style></noscript>
 </head>
 <body data-page="accueil">
 <div class="chargement" aria-hidden="true">
@@ -43,7 +43,7 @@
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header class="entete">
   <div class="entete__in">
-    <a class="marque" href="index.html" aria-label="Pix’n Croq by Liz Leroy, accueil"><b>Pix’n <i>Croq</i></b><small>by Liz Leroy</small></a>
+    <a class="marque" href="index.html" aria-label="Pix’n Croq by Liz Leroy, accueil"><b>Pix’n <i>Croq</i></b> <small>by Liz Leroy</small></a>
     <div class="compteur" aria-hidden="true"><span>Vue</span><span class="compteur__num"><span>01</span></span><span class="compteur__total">/00</span><span class="compteur__nom"></span></div>
     <nav class="nav" aria-label="Navigation principale">
       <a href="seances.html">Séances &amp; tarifs</a>
@@ -53,14 +53,14 @@
     </nav>
     <div class="outils">
       <button class="outil" data-action="son" type="button" aria-pressed="false" aria-label="Son du déclencheur" title="Son du déclencheur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span class="lbl">Son</span></button>
-      <button class="outil" data-action="calme" type="button" aria-pressed="false" aria-label="Mode calme : réduire les animations" title="Réduire les animations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg><span class="lbl">Mode calme</span></button>
-      <button class="outil panier-btn" type="button" aria-label="Ouvrir le panier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="nb">0</span></button>
+      <button class="outil" data-action="calme" type="button" aria-pressed="false" aria-label="Mode calme&nbsp;: réduire les animations" title="Réduire les animations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg><span class="lbl">Mode calme</span></button>
+      <button class="outil panier-btn" type="button" aria-label="Ouvrir le panier, 0 article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="nb">0</span></button>
       <a class="btn btn--petit reserver-cta" href="index.html#reserver" data-magnet>Réserver</a>
       <button class="outil menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
     </div>
   </div>
 </header>
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-lenis-prevent>
   <button class="outil menu-fermer" type="button" aria-label="Fermer le menu">Fermer</button>
   <a href="seances.html">Séances &amp; tarifs</a>
   <a href="boutique.html">Boutique</a>
@@ -81,7 +81,7 @@
   <section class="ouverture" data-vue="Ouverture" aria-label="Ouverture">
     <div class="ouverture__cadre" data-sous-entete data-curseur="voir" data-curseur-texte="Lumière">
       <div class="ouverture__photo" style="position:absolute;inset:0">
-        <picture><source media="(max-width: 760px)" srcset="assets/img/photos/portrait-automne-04-480.webp 480w, assets/img/photos/portrait-automne-04-960.webp 960w, assets/img/photos/portrait-automne-04-1600.webp 1600w, assets/img/photos/portrait-automne-04-2400.webp 2400w" sizes="100vw" width="2591" height="3588" data-px="portrait-automne-04"><img src="assets/img/photos/mariage-couple-prairie-1600.webp" srcset="assets/img/photos/mariage-couple-prairie-480.webp 480w, assets/img/photos/mariage-couple-prairie-960.webp 960w, assets/img/photos/mariage-couple-prairie-1600.webp 1600w, assets/img/photos/mariage-couple-prairie-2400.webp 2400w" sizes="100vw" width="11160" height="5580" alt="Photo de Liz Leroy : mariés dans une prairie au soleil couchant" fetchpriority="high" decoding="async" style="background-color:#645f3e" data-px="mariage-couple-prairie"></picture>
+        <picture><source media="(max-width: 760px)" srcset="assets/img/photos/portrait-automne-04-480.webp 480w, assets/img/photos/portrait-automne-04-960.webp 960w, assets/img/photos/portrait-automne-04-1600.webp 1600w, assets/img/photos/portrait-automne-04-2400.webp 2400w" sizes="100vw" width="2591" height="3588" data-px="portrait-automne-04"><img src="assets/img/photos/mariage-couple-prairie-1600.webp" srcset="assets/img/photos/mariage-couple-prairie-480.webp 480w, assets/img/photos/mariage-couple-prairie-960.webp 960w, assets/img/photos/mariage-couple-prairie-1600.webp 1600w, assets/img/photos/mariage-couple-prairie-2400.webp 2400w" sizes="100vw" width="11160" height="5580" alt="Photo de Liz Leroy&nbsp;: mariés dans une prairie au soleil couchant" fetchpriority="high" decoding="async" style="background-color:#645f3e" data-px="mariage-couple-prairie"></picture>
       </div>
       <div class="ouverture__soleil" aria-hidden="true"></div>
       <div class="ouverture__voile" aria-hidden="true"></div>
@@ -339,10 +339,10 @@
       </div>
       <form class="formulaire" id="form-resa" novalidate aria-label="Demande de séance">
         <div class="pellicule" aria-label="Étapes de la demande">
-          <button type="button" data-aller="0" aria-current="step" aria-label="Étape 1 sur 4 : la séance"><small>Vue 1</small><span>Séance</span></button>
-          <button type="button" data-aller="1" aria-label="Étape 2 sur 4 : la date"><small>Vue 2</small><span>Date</span></button>
-          <button type="button" data-aller="2" aria-label="Étape 3 sur 4 : le lieu"><small>Vue 3</small><span>Lieu</span></button>
-          <button type="button" data-aller="3" aria-label="Étape 4 sur 4 : vos coordonnées"><small>Vue 4</small><span>Vous</span></button>
+          <button type="button" data-aller="0" aria-current="step" aria-label="Vue 1, séance (étape 1 sur 4)"><small>Vue 1</small> <span>Séance</span></button>
+          <button type="button" data-aller="1" aria-label="Vue 2, date (étape 2 sur 4)"><small>Vue 2</small> <span>Date</span></button>
+          <button type="button" data-aller="2" aria-label="Vue 3, lieu (étape 3 sur 4)"><small>Vue 3</small> <span>Lieu</span></button>
+          <button type="button" data-aller="3" aria-label="Vue 4, vous (étape 4 sur 4)"><small>Vue 4</small> <span>Vous</span></button>
         </div>
         <fieldset class="etape-form" data-etape="0">
           <legend>Quelle séance ?</legend>
@@ -386,7 +386,7 @@
           <h3>Merci !</h3>
           <p>Merci pour votre message ! Je vous réponds dans les plus brefs délais.</p>
           <p class="note-maquette" id="r-resume"></p>
-          <p class="note-maquette maquette">Maquette : aucun message n’est envoyé. Le site définitif transmettra cette demande par e-mail.</p>
+          <p class="note-maquette">Maquette : aucun message n’est envoyé. Le site définitif transmettra cette demande par e-mail.</p>
           <div><button class="btn btn--ligne btn--petit" type="button" id="r-nouveau">Nouvelle demande</button></div>
         </div>
       </form>

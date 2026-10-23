@@ -118,7 +118,7 @@ p { margin: 0; text-wrap: pretty; }
 .compteur__num span { position: absolute; left: 0; top: 0; line-height: 1.3em; }
 .compteur__nom { opacity: .7; max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
 .outils { display: flex; align-items: center; gap: .4rem; }
-.outil { display: inline-flex; align-items: center; gap: .45em; height: 38px; padding: 0 .8em; border-radius: 999px; border: 1px solid currentColor; background: transparent; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; opacity: .9; }
+.outil { display: inline-flex; align-items: center; gap: .45em; height: 44px; padding: 0 .8em; border-radius: 999px; border: 1px solid currentColor; background: transparent; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; opacity: .9; }
 .outil[aria-pressed="true"] { background: currentColor; }
 .outil[aria-pressed="true"] > * { color: var(--crepuscule); }
 .entete.solide .outil[aria-pressed="true"] > * { color: var(--papier); }
@@ -161,6 +161,9 @@ p { margin: 0; text-wrap: pretty; }
 
 /* ---------- Ouverture, iris, flash ---------- */
 .chargement { position: fixed; inset: 0; z-index: 100; background: var(--crepuscule); color: var(--creme-nuit); display: grid; place-items: center; }
+/* filet : si core.js ne s'exécute pas, l'écran de chargement s'efface de lui-même */
+.chargement { animation: chargement-secours .5s 6s forwards; }
+@keyframes chargement-secours { to { opacity: 0; visibility: hidden; } }
 .chargement__in { text-align: center; display: grid; gap: 1.1rem; justify-items: center; }
 .chargement__marque { font-family: var(--f-titre); font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 340; }
 .chargement__marque i { color: var(--miel); }
@@ -818,7 +821,11 @@ img[data-px] { background-color: var(--lin); }
 .visionneuse__scene img { max-width: 100%; max-height: calc(100svh - 150px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); width: auto; height: auto; object-fit: contain; }
 /* Textes lisibles au repos */
 .manifeste__texte .mot { color: rgba(242, 228, 208, .5); }
-.etape { opacity: .55; }
+.etape { opacity: 1; }
+/* étapes inactives : seuls le numéro et le titre s'estompent, le paragraphe reste lisible (≥ 4,5:1) */
+.etape:not(.active) .etape__num, .etape:not(.active) h3 { opacity: .5; transition: opacity .6s var(--ease); }
+.calme .etape .etape__num, .calme .etape h3 { opacity: 1; }
+@media (max-width: 900px), (prefers-reduced-motion: reduce) { .etape .etape__num, .etape h3 { opacity: 1; } }
 /* En-tête mobile : pastille Réserver, masquée quand la barre du bas est là */
 @media (max-width: 900px) {
   .entete .reserver-cta { display: inline-flex; min-height: 38px; padding: 0 .95em; }
@@ -891,7 +898,7 @@ img[data-px] { background-color: var(--lin); }
 .sommaire__carte small { color: var(--fumee); font-size: var(--t-s); }
 .sommaire__carte:focus-visible { outline: none; }
 .sommaire__carte:focus-visible .cadre { outline: 2px solid var(--ocre-texte); outline-offset: 4px; }
-@media (max-width: 560px) { .sommaire__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; } .sommaire__carte b { font-size: 1.1rem; } .sommaire__carte small { display: none; } }
+@media (max-width: 560px) { .sommaire__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; } .sommaire__carte { grid-template-columns: minmax(0, 1fr); min-width: 0; } .sommaire__ligne { flex-wrap: wrap; gap: .2rem .6rem; } .sommaire__carte b { font-size: 1.1rem; } .sommaire__carte small { display: none; } }
 .av-ap { width: 100%; }
 .av-ap__cote span { background: var(--encre); color: var(--papier); }
 /* Passage ouverture vers manifeste : la photo se fond dans la couleur du crépuscule, sans bord */
@@ -902,3 +909,7 @@ img[data-px] { background-color: var(--lin); }
   .ouverture::after { display: none; }
   .ouverture__voile { background: linear-gradient(180deg, rgba(29,21,17,0) 52%, rgba(29,21,17,.3) 70%, rgba(29,21,17,.72) 86%, rgba(29,21,17,.94) 96%, var(--crepuscule) 100%); }
 }
+
+/* audit : menu défilable en paysage, verrou de défilement sous les fenêtres */
+.menu { overflow-y: auto; overscroll-behavior: contain; }
+html.verrou { overflow: hidden; }
